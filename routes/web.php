@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthOtpController;
 use App\Http\Controllers\EsewaController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -41,6 +42,7 @@ Route::get('/check-balance', 'SMSController@checkBalance');
 
 
 use App\Http\Controllers\SmsController;
+use App\Http\Controllers\TaskController;
 
 Route::post('/send-sms', [SmsController::class, 'sendSMS']);
 
@@ -59,6 +61,18 @@ Route::get('/start-free-trial', 'SubscriptionController@startFreeTrial')->name('
 Route::post('/esewa', [EsewaController::class, 'esewaPay'])->name('esewa');
 Route::get('/success', [EsewaController::class, 'esewaPaySuccess']);
 Route::get('/failure', [EsewaController::class, 'esewaPayFailed']);
+
+
+Route::get('update_task', [HomeController::class, 'update_task'])->name('update_task');
+
+Route::get('/index', [TaskController::class, 'index']);
+Route::post('/task', [TaskController::class, 'store'])->name('task.store');
+Route::patch('/task/{task}', [TaskController::class, 'update'])->name('task.update');
+
+
+Route::resource('tasks', TaskController::class);
+
+
 
 
 use App\Http\Controllers\Auth\YourOtpVerificationController;

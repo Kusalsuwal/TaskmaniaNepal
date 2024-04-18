@@ -56,11 +56,8 @@
                                     {{ __('Login') }}
                                 </button>
   
-                                OR
-  
-                                <a class="btn btn-success" href="{{ route('otp.login') }}">
-                                    Login with OTP
-                                </a>
+                    
+
   
                                 @if (Route::has('password.request'))
                                     <a class="btn btn-link" href="{{ route('password.request') }}">

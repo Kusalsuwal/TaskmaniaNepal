@@ -18,6 +18,10 @@
 
     <!-- Custom styles for this template -->
     <link href="narrow-jumbotron.css" rel="stylesheet">
+    <style>        .text-muted {
+            font-weight: bold;
+            color: #0056b3 !important; /* Custom color for brand */
+        }</style>
   </head>
 
   <body data-new-gr-c-s-check-loaded="14.1060.0" data-gr-ext-installed="">
