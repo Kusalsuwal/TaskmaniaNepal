@@ -34,10 +34,12 @@ class HomeController extends Controller
         // dd('asdasdasdasdasd');
         return view('Account.otpverification');
     }
+
     public function subscription()
     {
-        return view('Account.subscription');
+        return view('auth.subscription');
     }
+ 
 
 }
 

@@ -10,6 +10,7 @@
         "laravel/framework": "^10.0",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
+        "remotemerge/esewa-php-sdk": "^2.7",
         "twilio/sdk": "^8.0"
     },
     "require-dev": {
@@ -68,3 +69,4 @@
     "minimum-stability": "stable",
     "prefer-stable": true
 }
+

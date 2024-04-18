@@ -151,7 +151,7 @@ public function verifyOtp(Request $request, $user_id)
     }
 
     // OTP is correct and not expired
-    $user->otp = null; // clear the otp since it's no longer needed
+    // $user->otp = null; // clear the otp since it's no longer needed
     $user->otp_expires_at = null;
     $user->save();
 
@@ -159,7 +159,11 @@ public function verifyOtp(Request $request, $user_id)
     auth()->login($user);
 
     // Redirect to the home page or any other page
-    return redirect()->route('home')->with('success', 'You have been successfully verified.');
+    return redirect()->route('subscriptionpage.index')->with('success', 'You have been successfully verified.');
+}
+public function subscriptionpage()
+{
+    return view('auth.subscription');
 }
 public function verification($user_id)
 {
