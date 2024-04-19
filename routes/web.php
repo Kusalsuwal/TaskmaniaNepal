@@ -6,7 +6,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-  
+use App\Http\Controllers\SmsController;
+use App\Http\Controllers\TaskController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -35,27 +36,21 @@ Route::controller(AuthOtpController::class)->group(function(){
     Route::get('otp/verification/{user_id}', 'verification')->name('otp.verification');
     Route::post('otp/login', 'loginWithOtp')->name('otp.getlogin');
 });
+
 Route::get('/otp/verification/{user_id}', [App\Http\Controllers\Auth\AuthOtpController::class, 'verification'])->name('otp.verification');
 Route::post('/otp/verify/{user_id}', [AuthOtpController::class, 'verifyOtp'])->name('otp.verify');
 Route::get('/check-balance', 'SMSController@checkBalance');
 
 
 
-use App\Http\Controllers\SmsController;
-use App\Http\Controllers\TaskController;
+
 
 Route::post('/send-sms', [SmsController::class, 'sendSMS']);
-
 Route::get('/payment', [PaymentController::class, ' showForm']);
 Route::post('/payment', [PaymentController::class, 'processPayment'])->name('process.payment');
-// Web routes file (web.php)
 
-// Route for subscribing
 
 Route::get('/subscribe-now', [App\Http\Controllers\SubscriptionController::class, 'subscribeNow'])->name('subscribe-now');
-// Route::get('/subscribe-now', 'SubscriptionController@subscribeNow')->name('subscribe-now');
-
-// Route for starting a free trial
 Route::get('/start-free-trial', 'SubscriptionController@startFreeTrial')->name('start-free-trial');
 
 Route::post('/esewa', [EsewaController::class, 'esewaPay'])->name('esewa');

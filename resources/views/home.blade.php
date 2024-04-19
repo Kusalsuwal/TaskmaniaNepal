@@ -3,25 +3,35 @@
 @section('content')
 <div class="container">
     <div class="row">
-
-        <div id="div-todo" class="dropzone" ondrop="drop(event)" ondragover="allowDrop(event)">
-            <h3 class="title">To Do</h3>
-            <form class="task-form" action="{{ route('tasks.store') }}" method="POST">
+        @foreach(['todo' => 'To Do', 'doing' => 'Doing', 'done' => 'Done'] as $status => $title)
+        <div id="div-{{ $status }}" class="dropzone" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <h3 class="title">{{ $title }}</h3>
+            @if($status == 'todo')
+            <form action="{{ route('tasks.store') }}" method="POST" class="task-form">
                 @csrf
-                <input type="hidden" name="status" value="todo">
+                <input type="hidden" name="status" value="{{ $status }}">
                 <input type="text" name="name" placeholder="Enter task name">
                 <button type="submit">Add Task</button>
             </form>
-            <div id="tasks-todo"></div>
-        </div>
-
-
-        @foreach(['doing' => 'Doing', 'done' => 'Done'] as $status => $title)
-        <div id="div-{{ $status }}" class="dropzone" ondrop="drop(event)" ondragover="allowDrop(event)">
-            <h3 class="title">{{ $title }}</h3>
-            <div id="tasks-{{ $status }}"></div>
+            @endif
+            <div id="tasks-{{ $status }}">
+                @foreach ($tasks[$status] ?? [] as $task)
+                <div onclick="showModal(this)" draggable="true" ondragstart="drag(event)" class="task" id="task-{{ $task->id }}" data-task-name="{{ $task->name }}">
+                    {{ $task->name }}
+                </div>
+                @endforeach
+            </div>
         </div>
         @endforeach
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="taskModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>Task Details</h2>
+        <p id="taskName">No task selected</p>
     </div>
 </div>
 
@@ -42,12 +52,13 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(data => {
                 if (data.success) {
                     const task = document.createElement('div');
-                    task.className = 'task';
+                    task.className = 'task'; 
                     task.draggable = true;
                     task.ondragstart = drag;
                     task.id = `task-${data.task.id}`;
                     task.textContent = data.task.name;
                     document.querySelector(`#div-${data.task.status}`).appendChild(task);
+                    form.reset(); // Reset the form to clear the input after successful task addition
                 } else {
                     alert('Error adding task');
                 }
@@ -56,6 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
 
 function allowDrop(ev) {
     ev.preventDefault();
@@ -79,6 +91,18 @@ function drop(ev) {
     }
 }
 
+function showModal(element) {
+    var modal = document.getElementById('taskModal');
+    var taskName = element.getAttribute('data-task-name');
+    document.getElementById('taskName').textContent = taskName;
+    modal.style.display = 'block';
+}
+
+function closeModal() {
+    var modal = document.getElementById('taskModal');
+    modal.style.display = 'none';
+}
+
 function updateTaskStatus(taskId, newStatus) {
     fetch(`/tasks/${taskId}/update`, {
         method: 'POST',
@@ -97,13 +121,22 @@ function updateTaskStatus(taskId, newStatus) {
     })
     .catch(error => console.error('Error updating task status:', error));
 }
-
 </script>
 
 <style>
+
+    .task:hover{
+        background-color: gold;
+    }
+
 .container { display: flex; justify-content: space-around; padding: 20px; }
 .dropzone { flex: 1; min-width: 300px; min-height: 300px; background-color: #f4f4f8; border: 2px dashed #ccc; box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 10px; border-radius: 5px; display: flex; flex-direction: column; align-items: center; justify-content: start; overflow: auto; margin: 0 10px; }
 .title { color: #333; font-size: 1.2em; margin-bottom: 15px; }
-.task { padding: 10px 15px; background-color: #fff; border: 1px solid #ddd; border-radius: 3px; margin-bottom: 10px; width: 100%; box-sizing: border-box; text-align: center; cursor: pointer; }
+.task { background-color: #000;
+transition: background-color 0.5s;padding: 10px 15px; background-color: #fff; border: 1px solid #ddd; border-radius: 3px; margin-bottom: 10px; width: 100%; box-sizing: border-box; text-align: center; cursor: pointer; }
+.modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgb(0,0,0); background-color: rgba(0,0,0,0.4); }
+.modal-content { background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 50%; height: 300px;}
+.close { color: #aaaaaa; float: right; font-size: 28px; font-weight: bold; margin-left: 600px;}
+.close:hover, .close:focus { color: #000; text-decoration: none; cursor: pointer; }
 </style>
 @endsection

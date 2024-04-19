@@ -28,8 +28,6 @@ class PaymentController extends Controller
         // Generate HMAC signature
         $signature = hash_hmac('sha256', $data, $secretKey);
 
-        // Normally you would send this $signature along with other data to eSewa's endpoint
-        // Here we just log it for demonstration
         Log::info("Generated Signature: " . $signature);
 
         return view('payments.confirm', [

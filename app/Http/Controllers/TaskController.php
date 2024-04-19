@@ -8,11 +8,12 @@ use Illuminate\Http\Request;
 class TaskController extends Controller
 {
  
-    public function index()
-    {
-        $tasks = Task::all()->groupBy('status');
-        return view('home', compact('tasks'));
-    }
+    // public function index()
+    // {
+    //     $tasks = Task::all()->groupBy('status');
+    //     dd($tasks);
+    //     return view('home', compact('tasks'));
+    // }
 
  
     public function store(Request $request)
