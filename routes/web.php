@@ -70,6 +70,12 @@ Route::post('/task', [TaskController::class, 'store'])->name('task.store');
 Route::patch('/task/{task}', [TaskController::class, 'update'])->name('task.update');
 
 
+
+Route::post('/tasks/{task}/update', [TaskController::class, 'updateStatus']);
+
+
+
+
 Route::resource('tasks', TaskController::class);
 
 
