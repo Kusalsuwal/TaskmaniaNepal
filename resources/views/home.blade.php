@@ -1,25 +1,33 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
+<div class="container-fluid">
     <div class="row">
         @foreach(['todo' => 'To Do', 'doing' => 'Doing', 'done' => 'Done'] as $status => $title)
-        <div id="div-{{ $status }}" class="dropzone" ondrop="drop(event)" ondragover="allowDrop(event)">
-            <h3 class="title">{{ $title }}</h3>
-            @if($status == 'todo')
-            <form action="{{ route('tasks.store') }}" method="POST" class="task-form">
-                @csrf
-                <input type="hidden" name="status" value="{{ $status }}">
-                <input type="text" name="name" placeholder="Enter task name">
-                <button type="submit">Add Task</button>
-            </form>
-            @endif
-            <div id="tasks-{{ $status }}">
-                @foreach ($tasks[$status] ?? [] as $task)
-                <div onclick="showModal(this)" draggable="true" ondragstart="drag(event)" class="task" id="task-{{ $task->id }}" data-task-name="{{ $task->name }}">
-                    {{ $task->name }}
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title">{{ $title }}</h3>
                 </div>
-                @endforeach
+                <div class="card-body dropzone" ondrop="drop(event, '{{ $status }}')" ondragover="allowDrop(event)">
+                    @if($status == 'todo')
+                    <form id="form-{{ $status }}" action="{{ route('tasks.store') }}" method="POST" class="task-form">
+                        @csrf <!-- Include CSRF token -->
+                        <input type="hidden" name="status" value="{{ $status }}">
+                        <div class="mb-3">
+                            <input type="text" name="name" class="form-control" placeholder="Enter task name">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Task</button>
+                    </form>
+                    @endif
+                    <div id="tasks-{{ $status }}">
+                        @foreach ($tasks[$status] ?? [] as $task)
+                        <div onclick="showModal('{{ $task->name }}', '{{ $task->description }}', '{{ $task->id }}')" draggable="true" ondragstart="drag(event)" class="task card mb-3" id="task-{{ $task->id }}" data-task-id="{{ $task->id }}" data-task-name="{{ $task->name }}">
+                            <div class="card-body">{{ $task->name }}</div>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
             </div>
         </div>
         @endforeach
@@ -30,13 +38,95 @@
 <div id="taskModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal()">&times;</span>
-        <h2>Task Details</h2>
-        <p id="taskName">No task selected</p>
+        <h2 class="mb-3">Task Details</h2>
+        <p id="taskName"></p>
+        <div class="mb-3">
+            <label for="taskDescription" class="form-label">Description</label>
+            <textarea id="taskDescription" class="form-control" placeholder="Enter task description"></textarea>
+        </div>
+        <button onclick="saveTaskDescription()" class="btn btn-primary">Save Description</button>
+        <input type="hidden" id="taskId"> <!-- Hidden input to store task ID -->
+        <meta name="csrf-token" content="{{ csrf_token() }}"> <!-- CSRF token -->
     </div>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
+    function allowDrop(ev) {
+        ev.preventDefault();
+    }
+
+    function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+    }
+
+    function drop(ev, newStatus) {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text");
+        var droppedTask = document.getElementById(data);
+        droppedTask.parentNode.removeChild(droppedTask);
+        document.getElementById(`tasks-${newStatus}`).appendChild(droppedTask);
+        var taskId = droppedTask.dataset.taskId;
+        updateTaskStatus(taskId, newStatus);
+    }
+
+    function showModal(taskName, taskDescription, taskId) {
+        var modal = document.getElementById('taskModal');
+        document.getElementById('taskName').textContent = taskName;
+        document.getElementById('taskDescription').value = taskDescription; // Populate description
+        document.getElementById('taskId').value = taskId; // Populate task ID
+        modal.style.display = 'block';
+    }
+
+    function closeModal() {
+        var modal = document.getElementById('taskModal');
+        modal.style.display = 'none';
+    }
+
+    function saveTaskDescription() {
+        var taskId = document.getElementById('taskId').value;
+        var description = document.getElementById('taskDescription').value;
+        
+        // Prepare the data to send in the request body
+        var formData = new FormData();
+        formData.append('description', description);
+        formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content')); // Include CSRF token
+        
+        fetch(`/tasks/${taskId}/update-description`, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Task description saved successfully');
+                closeModal(); // Close modal after saving the description
+            } else {
+                alert('Failed to save task description');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    function updateTaskStatus(taskId, newStatus) {
+        fetch(`/tasks/${taskId}/update`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({status: newStatus})
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) {
+                alert('Failed to update task status');
+            }
+        })
+        .catch(error => console.error('Error updating task status:', error));
+    }
+
+    // Add event listeners to all task forms
     document.querySelectorAll('.task-form').forEach(form => {
         form.addEventListener('submit', function (e) {
             e.preventDefault();
@@ -51,14 +141,18 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
+                    form.reset(); // Reset the form to clear the input after successful task addition
+                    // Append the newly added task to the corresponding div
                     const task = document.createElement('div');
-                    task.className = 'task'; 
+                    task.onclick = () => showModal(data.task.name, data.task.description, data.task.id);
                     task.draggable = true;
                     task.ondragstart = drag;
+                    task.className = 'task card mb-3';
                     task.id = `task-${data.task.id}`;
-                    task.textContent = data.task.name;
-                    document.querySelector(`#div-${data.task.status}`).appendChild(task);
-                    form.reset(); // Reset the form to clear the input after successful task addition
+                    task.dataset.taskId = data.task.id;
+                    task.dataset.taskName = data.task.name;
+                    task.innerHTML = `<div class="card-body">${data.task.name}</div>`;
+                    document.getElementById(`tasks-${data.task.status}`).appendChild(task);
                 } else {
                     alert('Error adding task');
                 }
@@ -66,77 +160,70 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => console.error('Error:', error));
         });
     });
-});
-
-
-function allowDrop(ev) {
-    ev.preventDefault();
-}
-
-function drag(ev) {
-    ev.dataTransfer.setData("text", ev.target.id);
-}
-
-function drop(ev) {
-    ev.preventDefault();
-    var data = ev.dataTransfer.getData("text");
-    var target = ev.target;
-    while (!target.classList.contains('dropzone') && target.parentNode) {
-        target = target.parentNode;
-    }
-    if (target.classList.contains('dropzone')) {
-        var droppedTask = document.getElementById(data);
-        target.appendChild(droppedTask);
-        updateTaskStatus(droppedTask.id.replace('task-', ''), target.id.replace('div-', ''));
-    }
-}
-
-function showModal(element) {
-    var modal = document.getElementById('taskModal');
-    var taskName = element.getAttribute('data-task-name');
-    document.getElementById('taskName').textContent = taskName;
-    modal.style.display = 'block';
-}
-
-function closeModal() {
-    var modal = document.getElementById('taskModal');
-    modal.style.display = 'none';
-}
-
-function updateTaskStatus(taskId, newStatus) {
-    fetch(`/tasks/${taskId}/update`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        },
-        body: JSON.stringify({status: newStatus})
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (!data.success) {
-            alert('Failed to update task status');
-        }
-    })
-    .catch(error => console.error('Error updating task status:', error));
-}
 </script>
 
+
 <style>
-
-    .task:hover{
-        background-color: gold;
+    body {
+        background-image: url('https://source.unsplash.com/1600x900/?office');
+        background-size: cover;
+        background-repeat: no-repeat;
+        font-family: Arial, sans-serif;
     }
-
-.container { display: flex; justify-content: space-around; padding: 20px; }
-.dropzone { flex: 1; min-width: 300px; min-height: 300px; background-color: #f4f4f8; border: 2px dashed #ccc; box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 10px; border-radius: 5px; display: flex; flex-direction: column; align-items: center; justify-content: start; overflow: auto; margin: 0 10px; }
-.title { color: #333; font-size: 1.2em; margin-bottom: 15px; }
-.task { background-color: #000;
-transition: background-color 0.5s;padding: 10px 15px; background-color: #fff; border: 1px solid #ddd; border-radius: 3px; margin-bottom: 10px; width: 100%; box-sizing: border-box; text-align: center; cursor: pointer; }
-.modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgb(0,0,0); background-color: rgba(0,0,0,0.4); }
-.modal-content { background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 50%; height: 300px;}
-.close { color: #aaaaaa; float: right; font-size: 28px; font-weight: bold; margin-left: 600px;}
-.close:hover, .close:focus { color: #000; text-decoration: none; cursor: pointer; }
+    .navbar {
+        background-color: rgba(0, 0, 0, 0.5);
+        padding: 10px 20px;
+    }
+    .navbar-brand {
+        color: #fff;
+    }
+    .card {
+        background-color: #fff;
+        border: none;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .dropzone {
+        min-height: 300px;
+        padding: 15px;
+    }
+    .task.card:hover {
+        background-color: #f4f4f8;
+    }
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+    .modal-content {
+        background-color: #fefefe;
+        margin: 10% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 50%;
+    }
+    .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+    .close:hover, .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    #taskDescription {
+        width: 100%;
+        height: 100px;
+        margin-bottom: 10px;
+    }
 </style>
 @endsection
