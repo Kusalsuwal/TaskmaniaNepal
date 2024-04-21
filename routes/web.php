@@ -6,7 +6,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-// use App\Http\Controllers\SmsController;
+use App\Http\Controllers\SmsController;
 use App\Http\Controllers\TaskController;
 /*
 |--------------------------------------------------------------------------
@@ -39,13 +39,14 @@ Route::controller(AuthOtpController::class)->group(function(){
 
 Route::get('/otp/verification/{user_id}', [App\Http\Controllers\Auth\AuthOtpController::class, 'verification'])->name('otp.verification');
 Route::post('/otp/verify/{user_id}', [AuthOtpController::class, 'verifyOtp'])->name('otp.verify');
-// Route::get('/check-balance', 'SMSController@checkBalance');
+
+Route::post('/check-balance', [SmsController::class, 'checkBalance']);
 
 
 
 
 
-// Route::post('/send-sms', [SmsController::class, 'sendSMS']);
+Route::post('/send-sms', [SmsController::class, 'sendSMS']);
 Route::get('/payment', [PaymentController::class, ' showForm']);
 Route::post('/payment', [PaymentController::class, 'processPayment'])->name('process.payment');
 
@@ -71,6 +72,32 @@ Route::post('/tasks/{taskId}/update-description', [TaskController::class,'update
 
 Route::post('/tasks/{task}/update', [TaskController::class, 'updateStatus']);
 // routes/web.php
+// Route for processing "Start Free Trial" form submission
+Route::get('/start-free-trial', function () {
+    // Capture the current date
+    $trialStartDate = now();
+    
+    // Store the trial start date in the user's session or database
+    session(['trial_start_date' => $trialStartDate]);
+    
+    // Redirect to the home page or wherever appropriate
+    return redirect()->route('home');
+});
+
+// Route for checking trial status and accessing restricted features
+Route::get('/restricted-page', function () {
+    // Retrieve the trial start date from session or database
+    $trialStartDate = session('trial_start_date');
+    
+    // Check if the trial period has expired (15 days)
+    if ($trialStartDate && now()->diffInDays($trialStartDate) < 15) {
+        // User is within the trial period, allow access
+        return view('restricted-page');
+    } else {
+        // Trial period has expired, restrict access
+        return redirect()->route('home')->with('error', 'Your trial has expired.');
+    }
+});
 
 
 

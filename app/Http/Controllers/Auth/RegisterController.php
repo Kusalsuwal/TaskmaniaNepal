@@ -52,7 +52,7 @@ class RegisterController extends Controller
         $user->save();
 
         try {
-            $success = $this->smsService->sendSms($user->mobile_no, "Your OTP is: $otp");
+            $success = $this->smsService->sendSms($user->mobile_no, "$otp is your registration OTP for Taskmania Nepal");
             if (!$success) {
                 throw new \Exception("Failed to send SMS.");
             }

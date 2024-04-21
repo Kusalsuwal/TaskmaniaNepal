@@ -10,7 +10,7 @@
                     <h3 class="card-title">{{ $title }}</h3>
                 </div>
                 <div class="card-body dropzone" ondrop="drop(event, '{{ $status }}')" ondragover="allowDrop(event)">
-                    @if($status == 'todo')
+                    @if($status == 'todo' || $status == 'doing' || $status == 'done')
                     <form id="form-{{ $status }}" action="{{ route('tasks.store') }}" method="POST" class="task-form">
                         @csrf <!-- Include CSRF token -->
                         <input type="hidden" name="status" value="{{ $status }}">
@@ -20,7 +20,7 @@
                         <button type="submit" class="btn btn-primary">Add Task</button>
                     </form>
                     @endif
-                    <div id="tasks-{{ $status }}">
+                    <div id="tasks-{{ $status }}" class="task-list">
                         @foreach ($tasks[$status] ?? [] as $task)
                         <div onclick="showModal('{{ $task->name }}', '{{ $task->description }}', '{{ $task->id }}')" draggable="true" ondragstart="drag(event)" class="task card mb-3" id="task-{{ $task->id }}" data-task-id="{{ $task->id }}" data-task-name="{{ $task->name }}">
                             <div class="card-body">{{ $task->name }}</div>
@@ -162,7 +162,6 @@
     });
 </script>
 
-
 <style>
     body {
         background-image: url('https://source.unsplash.com/1600x900/?office');
@@ -179,17 +178,19 @@
     }
     .card {
         background-color: #fff;
+        border: 1px solid #d0d0d0;
         border: none;
         border-radius: 5px;
         margin-bottom: 20px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
     .dropzone {
-        min-height: 300px;
+        min-height: auto;
         padding: 15px;
     }
     .task.card:hover {
         background-color: #f4f4f8;
+        box-shadow: 0 0 0 2px #d0d0d0;
     }
     .modal {
         display: none;
@@ -209,6 +210,7 @@
         border: 1px solid #888;
         width: 50%;
     }
+    
     .close {
         color: #aaaaaa;
         float: right;
@@ -224,6 +226,10 @@
         width: 100%;
         height: 100px;
         margin-bottom: 10px;
+    }
+    .card-body {
+        max-height: 300px; /* Adjust the maximum height as needed */
+        overflow-y: auto; /* Add vertical scroll when content exceeds max height */
     }
 </style>
 @endsection
