@@ -1,89 +1,298 @@
-<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<!------ Include the above in your HEAD tag ---------->
-
 <!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<html lang="en">
+<!--<![endif]-->
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="../../../../favicon.ico">
+    <!--[if IE]>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <![endif]-->
+    <title>Welcome to Homepage of Taskmania Nepal</title>
+    <!--GOOGLE FONT -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <!--BOOTSTRAP MAIN STYLES -->
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
 
-    <title>Homepage</title>
+    <!--FONTAWESOME MAIN STYLE -->
+    <link rel="stylesheet" href="{{ asset('css/font-awesome.min.css') }}">
+    <!--PRETTYPHOTO MAIN STYLE -->
+ 
+    <link rel="stylesheet" href="{{ asset('css/prettyPhoto.css') }}">
+    <!--CUSTOM STYLE -->
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
-    <!-- Bootstrap core CSS -->
-    <link href="../../css/editor.css" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+</head>
 
-    <!-- Custom styles for this template -->
-    <link href="narrow-jumbotron.css" rel="stylesheet">
-    <style>        .text-muted {
-            font-weight: bold;
-            color: #0056b3 !important; /* Custom color for brand */
-        }</style>
-  </head>
+<body>
 
-  <body data-new-gr-c-s-check-loaded="14.1060.0" data-gr-ext-installed="">
-
-    <div class="container">
-      <div class="header clearfix">
-        <nav>
-          <ul class="nav nav-pills float-right">
-            <!-- <li class="nav-item">
-              <a class="nav-link active" href="{{ url('/home') }}">Home <span class="sr-only">(current)</span></a>
-            </li> -->
-            <li class="nav-item">
-              <a class="nav-link" href="{{ route('login') }}">Login</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ route('register') }}">Register</a>
-            </li>
-          </ul>
-        </nav>
-        <h3 class="text-muted" style="margin-top: 10px;">Taskmania Nepal</h3>
-      </div>
-
-      <div class="jumbotron" style=" margin-top: 30px;">
-        <h1 class="display-3">Hello</h1>
-        <p class="lead">You can add here todo task</p>
-        <p><a class="btn btn-lg btn-success" href="{{ route('register') }}" role="button">Sign up today</a></p>
-      <!-- </div>
-        <h1 class="display-3">Jumbotron heading</h1>
-        <p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-        <p><a class="btn btn-lg btn-success" href="#" role="button">Sign up today</a></p>
-      </div>
-
-      <div class="row marketing">
-        <div class="col-lg-6">
-          <h4>Subheading</h4>
-          <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
-
-          <h4>Subheading</h4>
-          <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
-
-          <h4>Subheading</h4>
-          <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+    <!--NAV SECTION -->
+    <header id="header-nav" role="banner">
+        <div id="navbar" class="navbar navbar-default">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#"><i class="fa fa-flask color-red"></i>Taskmania Nepal</a>
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav flot-nav">
+                    <li><a href="#slide-head"><i class="fa fa-home color-red"></i> Home</a></li>
+                    <li><a href="#about-section"><i class="fa fa-wrench color-brown"></i> About Us</a></li>
+                    <li><a href="login"><i class="fa fa-check color-green"></i> Login</a></li>
+                    <li><a href="register"><i class="fa fa-picture-o color-light-blue"></i> Register</a></li>
+                    <li><a href="#pricing-section"><i class="fa fa-plane color-blue"></i> Pricing</a></li>
+                    <li><a href="#contact-section"><i class="fa fa-tint"></i> Contact</a></li>
+                </ul>
+            </div>
         </div>
+    </header>
+    <!--END NAV SECTION -->
+    <!--SLIDE CAROUSEL SECTION -->
+    <section id="slide-head" class="carousel">
+        <div class="carousel-inner">
+            <div class="item active">
+                <div class="container">
+                    <div class="carousel-content">
+                        <h2>"Empower Your Projects, Unleash Your Success: Taskmania Nepal, Where Tasks Meet Triumph!"
 
-        <div class="col-lg-6">
-          <h4>Subheading</h4>
-          <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
+</h2>
+                    </div>
+                </div>
+            </div>    </section>
+    <!--END SLIDE CAROUSEL SECTION -->
+    <!--ABOUT SECTION -->
+    <section id="about-section">
+        <div class="wrap-pad">
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 ">
+                    <div class="text-center">
+                        <h1><i class="fa fa-wrench small-icons bk-color-brown"></i>Meet Team</h1>
+                        <p class="lead">
+                        At Taskmania, we're fueled by a passion for innovation and a dedication to excellence. 
+                        Our diverse team brings together a wealth of experience and expertise, united by a shared vision to revolutionize task management.
+                        From developers and designers to marketers and support specialists, each member plays a vital role in shaping our platform and empowering our users. 
+                        Together, we strive to exceed expectations, drive success, and make collaboration effortless for our valued customers.
+                       
+                        </p>
+                    </div>
 
-          <h4>Subheading</h4>
-          <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
+                </div>
+                <!-- ./ Heading div-->
+                <div class="col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 margin-top-100  ">
+                    <div class="col-md-3 col-sm-6" data-scrollreveal="enter left and move 100px, wait 0.6s">
+                        <div class="text-center">
+                            <p>
+                               <img class="img-responsive img-thumbnail img-circle" src="{{ asset('img/team/team1.png') }}" alt="">
 
-          <h4>Subheading</h4>
-          <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+                            </p>
+                            <h3>Kusal Suwal</h3>
+                            <p>
+                               Software Developer
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6" data-scrollreveal="enter bottom and move 100px, wait 0.6s">
+                        <div class="text-center">
+                            <p>
+                                <img class="img-responsive img-thumbnail img-circle" src="{{ asset('img/team/team2.jpg') }}" alt="">
+                            </p>
+                            <h3>Maria Hary</h3>
+                            <p>
+                               UI/UX Desginer
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6" data-scrollreveal="enter bottom and move 100px, wait 0.6s">
+                        <div class="text-center">
+                            <p>
+                                <img class="img-responsive img-thumbnail img-circle" src="{{ asset('img/team/team1.png') }}" alt="">
+                            </p>
+                            <h3>Prajul Khatiwoda</h3>
+                            <p>
+                              Project Manager
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6" data-scrollreveal="enter right and move 100px, wait 0.6s">
+                        <div class="text-center">
+                            <p>
+                                <img class="img-responsive img-thumbnail img-circle"  src="{{ asset('img/team/team2.jpg') }}" alt="">
+                            </p>
+                            <h3>Rosal Bhaila</h3>
+                            <p>
+                               Full Stack Developer
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- ./ Content div-->
+            </div>
         </div>
-      </div> -->
+    </section>
+    <!--END ABOUT SECTION -->
+    <!--SERVICES SECTION -->
 
-      <!-- <footer class="footer">
-        <p>© Company 2017</p>
-      </footer> -->
+    <!--END SERVICES SECTION -->
+    <!--PORTFOLIO SECTION -->
 
-    </div> <!-- /container -->
-  
+    <!--END PORTFOLIO SECTION -->
+    <!--PRICING SECTION -->
+    <section id="pricing-section">
+        <div class="wrap-pad">
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 " data-scrollreveal="enter top and move 100px, wait 0.5s">
+                    <div class="text-center">
+                        <h1><i class="fa fa-plane small-icons bk-color-blue"></i>Our Pricing Options</h1>
+                        <p class="lead">
+                        "Unlock Your Potential with Flexible Pricing Plans: Taskmania Nepal - Where Value Meets Versatility!"                  
+                        </p>
+                    </div>
+                </div>
+                <!-- ./ Heading div-->
+                <div class="col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 margin-top-100 ">
+                    <div id="pricing-table" class="row">
+                        <div class="col-md-4 col-sm-4" data-scrollreveal="enter left and move 100px, wait 0.6s">
+                            <ul class="plan-main">
+                                <li class="plan-name">Starter</li>
+                                <li class="plan-price">Rs 100</li>
+                                <li>5GB Storage</li>
+                                <li>1GB Space</li>
+                                <li>Daily Notification</li>
+                                <li>Reminder Message</li>
+                                <li>24x7 Support</li>
+                                <li>Live Chat</li>
+                                <li class="plan-action"><a href="register" class="btn btn-primary btn-lg">Signup</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4 col-sm-4" data-scrollreveal="enter bottom and move 100px, wait 0.6s">
+                            <ul class="plan-main featured">
+                                <li class="plan-name">Medium</li>
+                                <li class="plan-price">Rs 200</li>
+                                <li>5GB Storage</li>
+                                <li>1GB Space</li>
+                                <li>Daily Notification</li>
+                                <li>Reminder Message</li>
+                                <li>24x7 Support</li>
+                                <li>Live Chat</li>
+                                <li class="plan-action"><a href="register" class="btn btn-primary btn-lg">Signup</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4 col-sm-4" data-scrollreveal="enter right and move 100px, wait 0.6s">
+                            <ul class="plan-main">
+                                <li class="plan-name">Advance</li>
+                                <li class="plan-price">Rs 300</li>
+                                <li>5GB Storage</li>
+                                <li>1GB Space</li>
+                                <li>Daily Notification</li>
+                                <li>Reminder Message</li>
+                                <li>24x7 Support</li>
+                                <li>Live Chat</li>
+                                <li class="plan-action"><a href="register" class="btn btn-primary btn-lg">Signup</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- ./ Content div-->
+            </div>
+        </div>
+    </section>
+    <!--END PRICING SECTION -->
+    <!--CONTACT SECTION -->
+    <section id="contact-section">
+        <div class="wrap-pad">
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 " data-scrollreveal="enter top and move 100px, wait 0.5s">
+                    <div class="text-center">
+                        <h1><i class="fa fa-tint small-icons bk-color-black"></i>Contact us Now</h1>
+                        <p class="lead">
+                           We are always here for your help.                       
+                        </p>
+                    </div>
+                </div>
+                <!-- ./ Heading div-->
+                <div class="col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1  margin-top-20">
+                    <div class="col-md-6  col-sm-12" data-scrollreveal="enter left and move 100px, wait 0.6s">
+                        <h3><i class="fa fa-pencil small-icons bk-color-light-blue"></i>Send Us Your Query</h3>
+                        <hr />
+                        <form>
+                            <div class="row">
+                                <div class="col-md-6 col-sm-6">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" required="required" placeholder="Name">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-6">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" required="required" placeholder="Email address">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12">
+                                    <div class="form-group">
+                                        <textarea name="message" id="message" required="required" class="form-control" rows="4" placeholder="Message"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-primary btn-lg">Submit Query</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-4 col-md-offset-1  col-sm-12" data-scrollreveal="enter right and move 100px, wait 0.6s">
+                        <h3><i class="fa fa-comments small-icons bk-color-red"></i>Reach Us Here</h3>
+                        <hr />
+                        13th Street, Pokhara.<br />
+                        Call: +977-9860846143<br />
+                        Email: taskmanianepal.com.np<br />
+                        <h3><i class="fa fa-plus small-icons bk-color-green"></i>Social Presence</h3>
+                        <a href="#"><i class="fa fa-facebook fa-3x color-facebook"></i></a>
+                        <a href="#"><i class="fa fa-twitter fa-3x color-twitter"></i></a>
+                        <a href="#"><i class="fa fa-google-plus fa-3x color-google-plus"></i></a>
+                        <a href="#"><i class="fa fa-linkedin fa-3x color-linkedin"></i></a>
+                        <a href="#"><i class="fa fa-pinterest fa-3x color-pinterest"></i></a>
+                    </div>
+                </div>
+                <!-- ./ Content div-->
+            </div>
+        </div>
+    </section>
+    <!--END CONTACT SECTION -->
+    <!--FOOTER SECTION -->
+    <footer id="footer">
+        <div class="row">
+            <div class="col-md-12  col-sm-12">
+                &copy; 2024 www.taskmanianepal.com.np  |  All Rights Reserved
+               
+            </div>
+        </div>
+    </footer>
+    <!--END FOOTER SECTION -->
+    <!-- JAVASCRIPT FILES PLACED AT THE BOTTOM TO REDUCE THE LOADING TIME  -->
+    <!-- CORE JQUERY LIBRARY -->
+<script src="{{ asset('js/jquery.js') }}"></script>
+<!-- BOOTSTRAP SCRIPTS LIBRARY -->
+<script src="{{ asset('js/bootstrap.min.js') }}"></script>
+<!-- PRETTYPHOTO  SCRIPTS  LIBRARY-->
+<script src="{{ asset('js/jquery.prettyPhoto.js') }}"></script>
+<!-- SCROLL REVEL  SCRIPTS  LIBRARY-->
+<script src="{{ asset('js/scrollReveal.js') }}"></script>
+<!-- CUSTOM SCRIPT-->
+<script src="{{ asset('js/custom.js') }}"></script>
 
 </body>
 </html>
