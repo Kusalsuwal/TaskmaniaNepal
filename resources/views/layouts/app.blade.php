@@ -24,7 +24,7 @@
 <body>
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-            <div class="container">
+            <div class="container" >
             <nav class="">
         <div class="container-fluid">
              <!-- <h3 class="navbar-brand"  href="#">Taskmania Nepal</h3> -->

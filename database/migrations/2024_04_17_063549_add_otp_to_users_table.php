@@ -9,6 +9,7 @@ class AddOtpToUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('otp')->nullable();  // Store OTP
+            $table->boolean('otp_verified')->default(false);
             $table->timestamp('otp_expires_at')->nullable();  // Expiration time for OTP
         });
     }
@@ -17,6 +18,7 @@ class AddOtpToUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn(['otp', 'otp_expires_at']);
+            $table->dropColumn('otp_verified');
         });
     }
 }

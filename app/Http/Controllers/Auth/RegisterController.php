@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendEmailJob;
 use App\Providers\RouteServiceProvider;
 use App\Services\SmsService;
 use App\Models\User;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Support\Facades\Mail;
 
 class RegisterController extends Controller
 {
@@ -51,6 +53,13 @@ class RegisterController extends Controller
         $user->otp_expires_at = Carbon::now()->addMinutes(10);
         $user->save();
 
+        Mail::raw("Your OTP is: $otp", function ($message) use ($request) {
+            $message->from('your-email@example.com', 'Taskmania Nepal')
+                    ->to($request->email)
+                    ->subject('Your OTP');
+        });
+        
+
         try {
             $success = $this->smsService->sendSms($user->mobile_no, "$otp is your registration OTP for Taskmania Nepal");
             if (!$success) {
@@ -62,6 +71,15 @@ class RegisterController extends Controller
         
 
         return redirect()->route('otp.verification', ['user_id' => $user->id]);
+    }
+    public function index1()
+    {
+        // You may not need to send emails to all users here, as this could be heavy.
+        // If you want to send emails to all users, consider queueing this operation separately.
+        $users = User::all(); 
+        foreach ($users as $user) {
+            SendEmailJob::dispatch($user);
+        }
     }
 
 }

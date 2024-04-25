@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendEmailJob;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -54,7 +55,7 @@ public function index()
     {
         return view('auth.subscription');
     }
- 
+
 
 }
 

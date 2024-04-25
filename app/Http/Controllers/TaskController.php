@@ -66,7 +66,7 @@ class TaskController extends Controller
             $task->description = $request->input('description');
             $task->save();
     
-            // Return success response
+            // Return success  
             return response()->json(['success' => true]);
         } catch (\Exception $e) {
             // Return error response if an exception occurs

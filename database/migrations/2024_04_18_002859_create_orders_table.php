@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('product_id');
             $table->string('amount');
             $table->string('esewa_status');
+            $table->enum('subscription_status', ['active', 'inactive'])->default('inactive');
+            $table->timestamp('subscription_start')->nullable();
             $table->timestamps();
         });
     }

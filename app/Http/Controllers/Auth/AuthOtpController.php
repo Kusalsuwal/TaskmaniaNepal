@@ -151,7 +151,7 @@ public function verifyOtp(Request $request, $user_id)
     }
 
     // OTP is correct and not expired
-    // $user->otp = null; // clear the otp since it's no longer needed
+    $user->otp = null; // clear the otp since it's no longer needed
     $user->otp_expires_at = null;
     $user->save();
 
