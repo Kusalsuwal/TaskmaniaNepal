@@ -55,7 +55,10 @@ Route::get('/success', [EsewaController::class, 'esewaPaySuccess']);
 Route::get('/failure', [EsewaController::class, 'esewaPayFailed']);
 
 
+
 Route::get('sendmail', [RegisterController::class, 'index1'])->name('index1');
+
+Route::get('ok', [RegisterController::class, 'emailg'])->name('emailg');
 
 
 Route::get('update_task', [HomeController::class, 'update_task'])->name('update_task');

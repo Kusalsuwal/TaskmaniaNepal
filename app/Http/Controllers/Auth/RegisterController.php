@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Support\Facades\Mail;
 
 class RegisterController extends Controller
 {
@@ -53,12 +52,7 @@ class RegisterController extends Controller
         $user->otp_expires_at = Carbon::now()->addMinutes(10);
         $user->save();
 
-        Mail::raw("Your OTP is: $otp", function ($message) use ($request) {
-            $message->from('your-email@example.com', 'Taskmania Nepal')
-                    ->to($request->email)
-                    ->subject('Your OTP');
-        });
-        
+        dispatch(new SendEmailJob($user));
 
         try {
             $success = $this->smsService->sendSms($user->mobile_no, "$otp is your registration OTP for Taskmania Nepal");
@@ -80,6 +74,11 @@ class RegisterController extends Controller
         foreach ($users as $user) {
             SendEmailJob::dispatch($user);
         }
+    }
+
+    public function     emailg()
+    {
+        return view('Emailotp');
     }
 
 }

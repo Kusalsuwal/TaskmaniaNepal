@@ -32,8 +32,7 @@ class MailNotify extends Mailable implements ShouldQueue
     public function build()
     {
         return $this->from('kusalsuwal5@gmail.com', 'Taskmania Nepal')
-                    ->subject('Your OTP for Taskmania Nepal')
-                    ->view('home')
-                    ->with(['otp' => $this->otp]);
+                    ->subject('Your OTP: ' . $this->otp)
+                    ->text('Emailotp'); // Assuming you have a plain text view for OTP
     }
 }
