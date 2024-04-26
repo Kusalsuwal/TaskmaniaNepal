@@ -52,7 +52,6 @@
                 <ul class="nav navbar-nav flot-nav">
                     <li><a href="#slide-head"><i class="fa fa-home color-red"></i> Home</a></li>
                     <li><a href="#about-section"><i class="fa fa-wrench color-brown"></i> About Us</a></li>
-
                     <li><a href="#pricing-section"><i class="fa fa-plane color-blue"></i> Pricing</a></li>
                     <li><a href="#contact-section"><i class="fa fa-tint"></i> Contact</a></li>
                     <li><a href="login"><i class="fa fa-check color-green"></i> Login</a></li>

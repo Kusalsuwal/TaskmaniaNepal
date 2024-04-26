@@ -21,6 +21,7 @@
             color: #0056b3 !important; /* Custom color for brand */
         }</style>
 </head>
+
 <body>
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
@@ -83,11 +84,21 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
-                                    </a>
+    <a class="dropdown-item" href="{{ route('LoginProfile') }}">Profile</a>
+    <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('passwordResetForm').submit();">
+    Change Password
+</a>
+
+<form id="passwordResetForm" action="{{ route('password.email') }}" method="POST" style="display: none;">
+    @csrf
+    <input type="email" name="email" value="{{ Auth::user()->email }}">
+</form>
+
+    <a class="dropdown-item" href="{{ route('logout') }}"
+        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+        {{ __('Logout') }}
+    </a>
+                                    
 
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                         @csrf

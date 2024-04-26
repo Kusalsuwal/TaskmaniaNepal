@@ -53,9 +53,12 @@ public function index()
 
     public function subscription()
     {
-        return view('auth.subscription');
+        return view('auth.subscription');   
     }
-
+    public function LoginProfile()
+    {
+        return view('Account.LoginProfile');
+    }
 
 }
 
