@@ -58,16 +58,38 @@
     function drag(ev) {
         ev.dataTransfer.setData("text", ev.target.id);
     }
-
     function drop(ev, newStatus) {
-        ev.preventDefault();
-        var data = ev.dataTransfer.getData("text");
-        var droppedTask = document.getElementById(data);
-        droppedTask.parentNode.removeChild(droppedTask);
-        document.getElementById(`tasks-${newStatus}`).appendChild(droppedTask);
-        var taskId = droppedTask.dataset.taskId;
-        updateTaskStatus(taskId, newStatus);
+    ev.preventDefault();
+    var data = ev.dataTransfer.getData("text");
+    var droppedTask = document.getElementById(data);
+    var tasksContainer = document.getElementById(`tasks-${newStatus}`);
+    var taskElements = tasksContainer.getElementsByClassName("task");
+
+    // Find the index where the dropped task should be inserted
+    var insertIndex = 0;
+    for (var i = 0; i < taskElements.length; i++) {
+        var taskRect = taskElements[i].getBoundingClientRect();
+        if (ev.clientY < taskRect.top + taskRect.height / 2) {
+            insertIndex = i;
+            break;
+        }
+        insertIndex = i + 1;
     }
+
+    // Remove the task from its original position
+    droppedTask.parentNode.removeChild(droppedTask);
+
+    // Insert the task into the new position
+    if (insertIndex >= taskElements.length) {
+        tasksContainer.appendChild(droppedTask); // Append to the end
+    } else {
+        tasksContainer.insertBefore(droppedTask, taskElements[insertIndex]); // Insert before the next task
+    }
+
+    var taskId = droppedTask.dataset.taskId;
+    updateTaskStatus(taskId, newStatus);
+}
+
 
     function showModal(taskName, taskDescription, taskId) {
         var modal = document.getElementById('taskModal');

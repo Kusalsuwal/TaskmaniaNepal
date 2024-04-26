@@ -76,7 +76,7 @@ class RegisterController extends Controller
         }
     }
 
-    public function     emailg()
+    public function emailg()
     {
         return view('Emailotp');
     }
