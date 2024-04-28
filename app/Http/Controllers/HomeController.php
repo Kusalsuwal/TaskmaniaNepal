@@ -41,12 +41,9 @@ public function index()
     return view('home', compact('tasks'));
 }
 
-    //     return view('home');
-    // }
+
     public function otp()
     {
-
-
         // dd('asdasdasdasdasd');
         return view('Account.otpverification');
     }

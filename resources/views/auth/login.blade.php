@@ -1,5 +1,3 @@
-@extends('layouts.app')
-@section('content')
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,27 +5,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--===============================================================================================-->    
-    <link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
+    <!-- <link rel="icon" type="image/png" href="images/icons/favicon.ico"/> -->
     <!--===============================================================================================-->
-    <link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+
     <!--===============================================================================================-->
-    <link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+    <!-- <link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css"> -->
     <!--===============================================================================================-->
-    <link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
+    <!-- <link rel="stylesheet" type="text/css" href="vendor/animate/animate.css"> -->
     <!--===============================================================================================-->    
-    <link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css">
+    <!-- <link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css"> -->
     <!--===============================================================================================-->
-    <link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
+    <!-- <link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css"> -->
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="css/util.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/font-awesome.min.css') }}">
+    <!--PRETTYPHOTO MAIN STYLE -->
+ 
+    <!-- <link rel="stylesheet" href="{{ asset('css/prettyPhoto.css') }}"> -->
+    <!--CUSTOM STYLE -->
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <!--===============================================================================================-->
 </head>
 <body>
     
+    <header id="header-nav" role="banner">
+        <div id="navbar" class="navbar navbar-default">
+            <div class="navbar-header">
+            <a class="navbar-brand" href="#"><img src="{{ asset('img/team/Taskman.png') }}" alt="Taskmania Nepal Logo"style="margin-top: -12px;width: 129px;height: auto;"></a>
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav flot-nav">
+                    <li><a href="login"><i class="fa fa-check color-green"></i> Login</a></li>
+                    <li><a href="register"><i class="fa fa-picture-o color-light-blue"></i> Register</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+    <!--END NAV SECTION -->
     <div class="limiter">
         <div class="container-login100">
-            <div class="wrap-login100">
+            <div class="wrap-login100" style="margin-top: 80px;">
                 <div class="login100-pic js-tilt" data-tilt>
                     <img src="img/img-01.png" alt="IMG">
                 </div>
@@ -99,4 +124,4 @@
 
 </body>
 </html>
-@endsection
+
