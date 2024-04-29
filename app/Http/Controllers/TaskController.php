@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Board;
 use App\Models\Task;
 use Illuminate\Http\Request;
+use SebastianBergmann\CodeCoverage\Report\Xml\Project;
 
 class TaskController extends Controller
 {
@@ -23,7 +25,7 @@ class TaskController extends Controller
             'name' => 'required|string|max:255',
             'status' => 'required|string|in:todo,doing,done',
         ]);
-
+ 
         // Create a new task
         $task = Task::create([
             'name' => $validatedData['name'],
@@ -73,5 +75,5 @@ class TaskController extends Controller
             return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
         }
     }
-    
+
 }

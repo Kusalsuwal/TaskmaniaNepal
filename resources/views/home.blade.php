@@ -3,36 +3,58 @@
 @section('content')
 <div class="container-fluid">
     <div class="row">
-        @foreach(['todo' => 'To Do', 'doing' => 'Doing', 'done' => 'Done'] as $status => $title)
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header bg-primary text-white">
-                    <h3 class="card-title">{{ $title }}</h3>
+                    <h3 class="card-title">Create your project </h3>
                 </div>
-                <div class="card-body dropzone" ondrop="drop(event, '{{ $status }}')" ondragover="allowDrop(event)">
-                    @if($status == 'todo' || $status == 'doing' || $status == 'done')
-                    <form id="form-{{ $status }}" action="{{ route('tasks.store') }}" method="POST" class="task-form">
+                <div class="card-body">
+                    <form id="form-new-board" action="{{ route('Bstores') }}" method="POST">
                         @csrf <!-- Include CSRF token -->
-                        <input type="hidden" name="status" value="{{ $status }}">
                         <div class="mb-3">
-                            <input type="text" name="name" class="form-control" placeholder="Enter task name">
+                            <input type="text" name="title" class="form-control" placeholder="Enter board name">
                         </div>
-                        <button type="submit" class="btn btn-primary">Add Task</button>
+                        <button type="submit" class="btn btn-primary">Add Board</button>
                     </form>
-                    @endif
-                    <div id="tasks-{{ $status }}" class="task-list">
-                        @foreach ($tasks[$status] ?? [] as $task)
-                        <div onclick="showModal('{{ $task->name }}', '{{ $task->description }}', '{{ $task->id }}')" draggable="true" ondragstart="drag(event)" class="task card mb-3" id="task-{{ $task->id }}" data-task-id="{{ $task->id }}" data-task-name="{{ $task->name }}">
-                            <div class="card-body">{{ $task->name }}</div>
-                        </div>
-                        @endforeach
-                    </div>
                 </div>
             </div>
+        </div>
+
+        @foreach ($boards as $board)
+        <div class="col-md-4">
+        <a href="{{ route('board.show', ['id' => $board->id]) }}" style="text-decoration: none;">
+
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="card-title">{{ $board->title }}</h3>
+                    </div>
+                    <div class="card-body dropzone" ondrop="drop(event, '{{ $board->id }}')" ondragover="allowDrop(event)">
+                        <!-- Task form -->
+                        <form id="form-board-{{ $board->id }}" action="{{ route('tasks.store') }}" method="POST" class="task-form" style="display: none;">
+                            @csrf <!-- Include CSRF token -->
+                            <input type="hidden" name="board_id" value="{{ $board->id }}">
+                            <div class="mb-3">
+                                <input type="text" name="name" class="form-control" placeholder="Enter task name">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add Task</button>
+                        </form>
+                        
+                        <!-- Task list -->
+                        <div id="tasks-board-{{ $board->id }}" class="task-list">
+                            @foreach ($board->cards as $card)
+                            <div onclick="showModal('{{ $card->name }}', '{{ $card->description }}', '{{ $card->id }}')" draggable="true" ondragstart="drag(event)" class="task card mb-3" id="task-{{ $card->id }}" data-task-id="{{ $card->id }}" data-task-name="{{ $card->name }}">
+                                <div class="card-body">{{ $card->name }}</div>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            </a>
         </div>
         @endforeach
     </div>
 </div>
+
 
 <!-- Modal -->
 <div id="taskModal" class="modal">
@@ -58,38 +80,23 @@
     function drag(ev) {
         ev.dataTransfer.setData("text", ev.target.id);
     }
-    function drop(ev, newStatus) {
-    ev.preventDefault();
-    var data = ev.dataTransfer.getData("text");
-    var droppedTask = document.getElementById(data);
-    var tasksContainer = document.getElementById(`tasks-${newStatus}`);
-    var taskElements = tasksContainer.getElementsByClassName("task");
 
-    // Find the index where the dropped task should be inserted
-    var insertIndex = 0;
-    for (var i = 0; i < taskElements.length; i++) {
-        var taskRect = taskElements[i].getBoundingClientRect();
-        if (ev.clientY < taskRect.top + taskRect.height / 2) {
-            insertIndex = i;
-            break;
-        }
-        insertIndex = i + 1;
+    function drop(ev, boardId) {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text");
+        var droppedTask = document.getElementById(data);
+        var tasksContainer = document.getElementById(`tasks-board-${boardId}`);
+        var taskElements = tasksContainer.getElementsByClassName("task");
+
+        // Remove the task from its original position
+        droppedTask.parentNode.removeChild(droppedTask);
+
+        // Append the task to the new board's task list
+        tasksContainer.appendChild(droppedTask);
+
+        var taskId = droppedTask.dataset.taskId;
+        updateTaskBoard(taskId, boardId);
     }
-
-    // Remove the task from its original position
-    droppedTask.parentNode.removeChild(droppedTask);
-
-    // Insert the task into the new position
-    if (insertIndex >= taskElements.length) {
-        tasksContainer.appendChild(droppedTask); // Append to the end
-    } else {
-        tasksContainer.insertBefore(droppedTask, taskElements[insertIndex]); // Insert before the next task
-    }
-
-    var taskId = droppedTask.dataset.taskId;
-    updateTaskStatus(taskId, newStatus);
-}
-
 
     function showModal(taskName, taskDescription, taskId) {
         var modal = document.getElementById('taskModal');
@@ -107,12 +114,10 @@
     function saveTaskDescription() {
         var taskId = document.getElementById('taskId').value;
         var description = document.getElementById('taskDescription').value;
-        
-        // Prepare the data to send in the request body
         var formData = new FormData();
         formData.append('description', description);
         formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content')); // Include CSRF token
-        
+
         fetch(`/tasks/${taskId}/update-description`, {
             method: 'POST',
             body: formData
@@ -121,7 +126,7 @@
         .then(data => {
             if (data.success) {
                 alert('Task description saved successfully');
-                closeModal(); // Close modal after saving the description
+                closeModal(); 
             } else {
                 alert('Failed to save task description');
             }
@@ -129,26 +134,35 @@
         .catch(error => console.error('Error:', error));
     }
 
-    function updateTaskStatus(taskId, newStatus) {
-        fetch(`/tasks/${taskId}/update`, {
+    function updateTaskBoard(taskId, boardId) {
+        fetch(`/tasks/${taskId}/update-board`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-Requested-With': 'XMLHttpRequest',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
             },
-            body: JSON.stringify({status: newStatus})
+            body: JSON.stringify({ board_id: boardId })
         })
         .then(response => response.json())
         .then(data => {
             if (!data.success) {
-                alert('Failed to update task status');
+                alert('Failed to update task board');
             }
         })
-        .catch(error => console.error('Error updating task status:', error));
+        .catch(error => console.error('Error updating task board:', error));
     }
 
-    // Add event listeners to all task forms
+    // Function to toggle display of task form
+    function showTaskForm(boardId) {
+        var form = document.getElementById('form-board-' + boardId);
+        if (form.style.display === 'none') {
+            form.style.display = 'block';
+        } else {
+            form.style.display = 'none';
+        }
+    }
+
     document.querySelectorAll('.task-form').forEach(form => {
         form.addEventListener('submit', function (e) {
             e.preventDefault();
@@ -163,8 +177,8 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    form.reset(); // Reset the form to clear the input after successful task addition
-                    // Append the newly added task to the corresponding div
+                    form.reset(); 
+
                     const task = document.createElement('div');
                     task.onclick = () => showModal(data.task.name, data.task.description, data.task.id);
                     task.draggable = true;
@@ -174,7 +188,7 @@
                     task.dataset.taskId = data.task.id;
                     task.dataset.taskName = data.task.name;
                     task.innerHTML = `<div class="card-body">${data.task.name}</div>`;
-                    document.getElementById(`tasks-${data.task.status}`).appendChild(task);
+                    document.getElementById(`tasks-board-${data.task.board_id}`).appendChild(task);
                 } else {
                     alert('Error adding task');
                 }
