@@ -42,18 +42,11 @@ class TaskController extends Controller
 
     public function updateStatus(Request $request, $taskId)
     {
-        // Validate the incoming request data
         $validatedData = $request->validate([
             'status' => 'required|string|in:todo,doing,done',
         ]);
-
-        // Find the task by ID
         $task = Task::findOrFail($taskId);
-
-        // Update the task status
         $task->update(['status' => $validatedData['status']]);
-
-        // Return success response
         return response()->json(['success' => true]);
     }
     public function updateDescription($taskId, Request $request)

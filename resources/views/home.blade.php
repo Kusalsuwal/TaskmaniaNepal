@@ -5,7 +5,7 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header bg-primary text-white">
-                    <h3 class="card-title">Create your project </h3>
+                <h3 class="card-title">Create your project </h3>
                 </div>
                 <div class="card-body">
                     <form id="form-new-board" action="{{ route('Bstores') }}" method="POST">
@@ -39,11 +39,11 @@
                         
                         <!-- Task list -->
                         <div id="tasks-board-{{ $board->id }}" class="task-list">
-                            @foreach ($board->cards as $card)
+                            <!-- @foreach ($board->cards as $card)
                             <div onclick="showModal('{{ $card->name }}', '{{ $card->description }}', '{{ $card->id }}')" draggable="true" ondragstart="drag(event)" class="task card mb-3" id="task-{{ $card->id }}" data-task-id="{{ $card->id }}" data-task-name="{{ $card->name }}">
                                 <div class="card-body">{{ $card->name }}</div>
                             </div>
-                            @endforeach
+                            @endforeach -->
                         </div>
                     </div>
                 </div>

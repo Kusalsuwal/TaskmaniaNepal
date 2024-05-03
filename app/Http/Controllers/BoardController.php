@@ -1,6 +1,5 @@
 <?php
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 use App\Models\Board;
 use App\Models\Status;
@@ -30,6 +29,7 @@ class BoardController extends Controller
     }
     public function show($id)
     {
+       
         $board = Board::findOrFail($id);
         $statuses = Status::where('board_id', $id)->get();
         return view('projectview', ['board' => $board, 'statuses' => $statuses]);
