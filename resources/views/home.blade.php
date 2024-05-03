@@ -1,5 +1,4 @@
 @extends('layouts.app')
-
 @section('content')
 <div class="container-fluid">
     <div class="row">
@@ -19,7 +18,6 @@
                 </div>
             </div>
         </div>
-
         @foreach ($boards as $board)
         <div class="col-md-4">
         <a href="{{ route('board.show', ['id' => $board->id]) }}" style="text-decoration: none;">

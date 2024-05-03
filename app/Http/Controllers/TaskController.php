@@ -20,20 +20,23 @@ class TaskController extends Controller
  
     public function store(Request $request)
     {
+        // dd($request->all());
+      
         // Validate the incoming request data
-        $validatedData = $request->validate([
+        $request->validate([
             'name' => 'required|string|max:255',
-            'status' => 'required|string|in:todo,doing,done',
         ]);
- 
+        // dd($request);
         // Create a new task
-        $task = Task::create([
-            'name' => $validatedData['name'],
-            'status' => $validatedData['status'],
-        ]);
-
+        $task = new Task();             
+        $task->name = $request->name;
+        $task->board_id = $request->board_id;
+        $task->status_id = $request->status;
+        $task->save();
+            
+    
         // Return the newly created task as JSON response
-        return response()->json(['success' => true, 'task' => $task]);
+        return redirect()->route('home')->with('success', 'Board created successfully.');
     }
 
 

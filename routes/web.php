@@ -102,7 +102,9 @@ use App\Http\Controllers\CardController;
 Route::post('/board', [BoardController::class, 'Bstores'])->name('Bstores');
 
 
-Route::get('/get/boards/{id}', [BoardController::class, 'show'])->name('board.show');
+Route::get('/boards/{id}', [BoardController::class, 'show'])->name('board.show');
+Route::post('/statuses', [BoardController::class, 'store'])->name('statuses.store');
+
 
 // Route::resource('boards', BoardController::class);
 Route::resource('Task', TaskController::class);
