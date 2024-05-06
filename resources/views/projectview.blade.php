@@ -9,7 +9,8 @@
             @if (!is_null($statuses))
                 @foreach($statuses as $key=>$status)
                     <div class="col-md-4">
-                        <div class="card">
+                        <!-- Update the card's div to handle drop events -->
+                        <div class="card" ondrop="drop(event)" ondragover="allowDrop(event)">
                             <div class="card-header">{{ $status->name }}</div>
                             <div class="card-body show"> <!-- Add 'show' class here -->
                                 <!-- Tasks within the status -->
@@ -24,31 +25,19 @@
                                 </ul>
                                 <!-- Form to add new task -->
                                 <form id="task-form-{{$key}}" class="task-form">
-
-
-                                   
                                     @csrf
-
+                                    <!-- Iterate over the cards and add them to the respective status -->
                                     @foreach ($board->cards as $card)
-                                     @if ($card->status_id == $status->id)  
-        <div onclick="showModal('{{ $card->name }}', '{{ $card->description }}', '{{ $card->id }}')" draggable="true" ondragstart="drag(event)" class="task card mb-3" id="task-{{ $card->id }}" data-task-id="{{ $card->id }}" data-task-name="{{ $card->name }}">
-            <div class="card-body">{{ $card->name }}</div>
-        </div>
+                                        @if ($card->status_id == $status->id)  
+                                        <div onclick="showModal('{{ $card->name }}', '{{ $card->description }}', '{{ $card->id }}')" draggable="true" ondragstart="drag(event)" class="task card mb-3" id="task-{{ $card->id }}" data-task-id="{{ $card->id }}" data-task-name="{{ $card->name }}" data-task-status-id="{{ $status->id }}">
+    <div class="card-body">{{ $card->name }}</div>
+</div>
+
                                         @endif 
-   
-@endforeach
-
-                                    <!-- @foreach ($board->cards as $card)
-
-                                        {{$status}}
-                                    {{$card}}
-                            <div onclick="showModal('{{ $card->name }}', '{{ $card->description }}', '{{ $card->id }}')" draggable="true" ondragstart="drag(event)" class="task card mb-3" id="task-{{ $card->id }}" data-task-id="{{ $card->id }}" data-task-name="{{ $card->name }}">
-                                <div class="card-body">{{ $card->name }}</div>
-                            </div>
-                            @endforeach -->
-                                    <input type="text" name="name"   class="form-control" placeholder="Enter task name">
+                                    @endforeach
+                                    <input type="text" name="name" class="form-control" placeholder="Enter task name">
                                     <input hidden name="status" value="{{ $status->id }}">
-                                    <input hidden  name="board_id" value="{{ $board->id }}">
+                                    <input hidden name="board_id" value="{{ $board->id }}">
                                     <button type="submit" class="btn btn-primary btn-sm mt-2">Add Task</button>
                                 </form>
                             </div>
@@ -68,7 +57,63 @@
     <!-- Include jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
-        
+        // JavaScript function to handle drag event
+        function drag(ev) {
+            ev.dataTransfer.setData("text", ev.target.id);
+        }
+
+        // JavaScript function to handle dragover event
+        function allowDrop(ev) {
+            ev.preventDefault();
+        }
+
+        // JavaScript function to handle drop event
+// JavaScript function to handle drop event
+// JavaScript function to handle drop event
+// JavaScript function to handle drop event
+// JavaScript function to handle drop event
+function drop(ev) {
+    ev.preventDefault();
+    var data = ev.dataTransfer.getData("text");
+    var droppedTask = document.getElementById(data);
+    var targetStatusId = ev.target.closest('.card').querySelector('.task-list').dataset.statusId;
+    
+    // Update the task's data with the new status_id
+    droppedTask.dataset.taskStatusId = targetStatusId;
+
+    // Remove the task from its current parent before appending it to the new one
+    droppedTask.parentNode.removeChild(droppedTask);
+
+    // Find the task list corresponding to the target status
+    var $taskList = $('[data-status-id="' + targetStatusId + '"]');
+    $taskList.append(droppedTask);
+
+    // Update the task's status using AJAX
+    var taskId = droppedTask.dataset.taskId;
+    updateTaskStatus(taskId, targetStatusId);
+}
+
+// Function to update task status using AJAX
+function updateTaskStatus(taskId, statusId) {
+    $.ajax({
+        url: '/update-task-status',
+        type: 'POST',
+        data: {
+            task_id: taskId,
+            status_id: statusId,
+            _token: '{{ csrf_token() }}'
+        },
+        success: function(response) {
+            console.log('Task status updated successfully');
+        },
+        error: function(xhr, status, error) {
+            console.error('Error updating task status:', error);
+        }
+    });
+}
+
+
+
         $(document).ready(function() {
             // AJAX for adding a new status
             $('#status-form').submit(function(event) {
@@ -77,7 +122,7 @@
                 $.ajax({
                     url: '{{ route("statuses.store") }}',
                     type: 'POST',
-                    data: formData,
+                    data: formData,  
                     success: function(response) {
                         // Append the newly created status card to the container
                         $('#statuses-container').append(`
@@ -134,6 +179,5 @@
                 });
             });
         });
-        
     </script>
 @endsection

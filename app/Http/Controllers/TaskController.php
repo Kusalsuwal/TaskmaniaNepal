@@ -40,36 +40,48 @@ class TaskController extends Controller
     }
 
 
-    public function updateStatus(Request $request, $taskId)
-    {
-        $validatedData = $request->validate([
-            'status' => 'required|string|in:todo,doing,done',
-        ]);
-        $task = Task::findOrFail($taskId);
-        $task->update(['status' => $validatedData['status']]);
-        return response()->json(['success' => true]);
-    }
-    public function updateDescription($taskId, Request $request)
-    {
-        // Validate request data if needed
-        $request->validate([
-            'description' => 'required|string',
-        ]);
+    // public function updateStatus(Request $request, $taskId)
+    // {
+    //     $validatedData = $request->validate([
+    //         'status' => 'required|string|in:todo,doing,done',
+    //     ]);
+    //     $task = Task::findOrFail($taskId);
+    //     $task->update(['status' => $validatedData['status']]);
+    //     return response()->json(['success' => true]);
+    // }
+    // public function updateDescription($taskId, Request $request)
+    // {
+    //     // Validate request data if needed
+    //     $request->validate([
+    //         'description' => 'required|string',
+    //     ]);
     
-        try {
-            // Find the task by ID
-            $task = Task::findOrFail($taskId);
+    //     try {
+    //         // Find the task by ID
+    //         $task = Task::findOrFail($taskId);
             
-            // Update the task description
-            $task->description = $request->input('description');
-            $task->save();
+    //         // Update the task description
+    //         $task->description = $request->input('description');
+    //         $task->save();
     
-            // Return success  
-            return response()->json(['success' => true]);
-        } catch (\Exception $e) {
-            // Return error response if an exception occurs
-            return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
-        }
+    //         // Return success  
+    //         return response()->json(['success' => true]);
+    //     } catch (\Exception $e) {
+    //         // Return error response if an exception occurs
+    //         return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
+    //     }
+    // }
+    public function updateTaskStatus(Request $request)
+    {
+        $request->validate([
+            'task_id' => 'required|exists:tasks,id',
+            'status_id' => 'required|exists:statuses,id'
+        ]);
+    
+        $task = Task::findOrFail($request->task_id);
+        $task->status_id = $request->status_id;
+        $task->save();
+    
+        return response()->json(['message' => 'Task status updated successfully']);
     }
-
 }

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SmsController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\BoardController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -61,7 +62,8 @@ Route::get('/index', [TaskController::class, 'index']);
 Route::post('/task', [TaskController::class, 'store'])->name('task.store');
 Route::patch('/task/{task}', [TaskController::class, 'update'])->name('task.update');
 Route::post('/tasks/{taskId}/update-description', [TaskController::class,'updateDescription'])->name('tasks.updateDescription');
-Route::post('/tasks/{task}/update', [TaskController::class, 'updateStatus']);
+Route::post('/update-task-status', [TaskController::class, 'updateTaskStatus'])->name('update-task-status');
+
 
 
 
@@ -89,7 +91,7 @@ Route::get('/restricted-page', function () {
 
 //Forgotpassword Implementing here
 // routes/web.php
-use App\Http\Controllers\Auth\ForgotPasswordController;
+
 Route::get('forgot-password', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.requests');
 Route::post('forgot-password', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.emails');
 
