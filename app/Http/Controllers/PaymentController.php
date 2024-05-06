@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Crypt;
 
 class PaymentController extends Controller
 {
-    public function showForm()
+    public function showForm() 
     {
         return view('payments.form');
     }

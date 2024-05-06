@@ -6,6 +6,7 @@ use App\Models\Board;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use SebastianBergmann\CodeCoverage\Report\Xml\Project;
+use App\Models\TaskHistory;
 
 class TaskController extends Controller
 {
@@ -71,17 +72,51 @@ class TaskController extends Controller
     //         return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
     //     }
     // }
-    public function updateTaskStatus(Request $request)
+
+// Controller method to update the status of a task
+public function updateTaskStatus(Request $request)
+{
+    $taskId = $request->input('task_id');
+    $newStatusId = $request->input('status_id');
+
+    // Retrieve the current status ID of the task
+    $task = Task::find($taskId);
+    $oldStatusId = $task->status_id;
+
+    // Update the status of the task
+    $task->status_id = $newStatusId;
+    $task->save();
+
+    // Insert a new record into the task_histories table
+    TaskHistory::create([
+        'task_id' => $taskId,
+        'old_status_id' => $oldStatusId,
+        'new_status_id' => $newStatusId,
+    ]);
+
+    return response()->json(['success' => true]);
+}
+
+    public function updateDescription($taskId, Request $request)
     {
+        // Validate request data if needed
         $request->validate([
-            'task_id' => 'required|exists:tasks,id',
-            'status_id' => 'required|exists:statuses,id'
+            'description' => 'required|string',
         ]);
     
-        $task = Task::findOrFail($request->task_id);
-        $task->status_id = $request->status_id;
-        $task->save();
+        try {
+            // Find the task by ID
+            $task = Task::findOrFail($taskId);
+            
+            // Update the task description
+            $task->description = $request->input('description');
+            $task->save();
     
-        return response()->json(['message' => 'Task status updated successfully']);
+            // Return success response
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            // Return error response if an exception occurs
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
+        }
     }
 }
