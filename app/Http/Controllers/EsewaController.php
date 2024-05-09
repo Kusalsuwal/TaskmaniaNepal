@@ -31,26 +31,25 @@ class EsewaController extends Controller
         $config = new EsewaConfig($successUrl, $failureUrl);
         $esewa = new EsewaClient($config);
 
-        // Assuming the process method is correct
+
         $esewa->process($pid, $amount, 0, 0, 0);
     }
     
     public function esewaPaySuccess()
     {
-        //do when pay success.
+     
         $pid = $_GET['oid'];
         $refId = $_GET['refId'];
         $amount = $_GET['amt'];
 
         $order = Order::where('product_id', $pid)->first();
-        //dd($order);
+ 
         $update_status = Order::find($order->id)->update([
             'esewa_status' => 'verified',
             'updated_at' => Carbon::now(),
         ]);
         if ($update_status) {
-            //send mail,....
-            //
+
             $msg = 'Success';
             $msg1 = 'Payment success. Thank you for making purchase with us.';
             return view('thankyou', compact('msg', 'msg1'));
@@ -59,22 +58,20 @@ class EsewaController extends Controller
 
     public function esewaPayFailed()
     {
-        //do when payment fails.
+
         $pid = $_GET['pid'];
         $order = Order::where('product_id', $pid)->first();
-        //dd($order);
+
         $update_status = Order::find($order->id)->update([
             'esewa_status' => 'failed',
             'updated_at' => Carbon::now(),
         ]);
         if ($update_status) {
-            //send mail,....
-            //
+
             $msg = 'Failed';
             $msg1 = 'Payment is failed. Contact admin for support.';
             return view('thankyou', compact('msg', 'msg1'));
         }
     }
 
-    // Rest of the controller methods
 }

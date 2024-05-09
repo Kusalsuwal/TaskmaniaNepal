@@ -68,8 +68,6 @@ class RegisterController extends Controller
     }
     public function index1()
     {
-        // You may not need to send emails to all users here, as this could be heavy.
-        // If you want to send emails to all users, consider queueing this operation separately.
         $users = User::all(); 
         foreach ($users as $user) {
             SendEmailJob::dispatch($user);

@@ -21,4 +21,5 @@ class TaskHistory extends Model
     {
         return $this->belongsTo(Status::class, 'new_status_id');
     }
+    
 }

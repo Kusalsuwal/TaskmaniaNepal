@@ -15,7 +15,7 @@ class SmsController extends Controller
         ]);
 
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer your_bearer_token', // Replace with your actual bearer token
+            'Authorization' => 'Bearer your_bearer_token',
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
         ])->post('https://sms.sociair.com/api/sms', [

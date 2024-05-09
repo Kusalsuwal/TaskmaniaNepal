@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Board;
 use App\Models\Status;
+use App\Models\TaskHistory;
 
 class BoardController extends Controller
 {
@@ -14,25 +15,26 @@ class BoardController extends Controller
 
     public function Bstores(Request $request)
     {
-        // Validate the incoming request data
+
         $request->validate([
             'title' => 'required|string|max:255',
         ]);
 
-        // Create a new board instance
         $board = new Board();
         $board->title = $request->title;
         $board->save();
 
-        // Redirect to a relevant page after creating the board
+
         return redirect()->route('home')->with('success', 'Board created successfully.');
     }
     public function show($id)
     {
-       
+
         $board = Board::findOrFail($id);
         $statuses = Status::where('board_id', $id)->get();
-        return view('projectview', ['board' => $board, 'statuses' => $statuses]);
+        
+        $task_histories = TaskHistory::where('old_status_id', $id,)->get();
+        return view('projectview', ['board' => $board, 'statuses' => $statuses,'task_histories' =>$task_histories]);
     }
     public function store(Request $request)
     {
@@ -40,11 +42,9 @@ class BoardController extends Controller
         $status->name = $request->name;
         $status->board_id = $request->board_id;
         $status->save();
-    
-        // Return the newly created status as JSON
+
         return response()->json($status);
     }
     
 
-    // Implement other CRUD methods as needed
 }

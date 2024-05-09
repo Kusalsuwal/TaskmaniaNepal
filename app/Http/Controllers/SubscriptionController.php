@@ -29,19 +29,17 @@ class SubscriptionController extends Controller
 
         return redirect()->route('home')->with('status', '15-day trial started!');
     }
-    // SubscriptionController.php
+
 
     public function subscribeNow()
     {
         $transaction_uuid = Str::uuid()->toString();
-    
-        // Pass the UUID to your view
+
         return view('subscribe_now', compact('transaction_uuid'));
     }
 
 public function startFreeTrial()
 {
-    // Logic to handle free trial
     return redirect()->to('/wherever-free-trial-starts');
 }
 

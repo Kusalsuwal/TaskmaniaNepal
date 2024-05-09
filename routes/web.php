@@ -10,18 +10,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SmsController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\BoardController;
-use App\Http\Controllers\Auth\ForgotPasswordController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/ 
+
   
 Route::get('/', function () {
     return view('welcome');
@@ -30,8 +20,6 @@ Route::get('/', function () {
 Auth::routes();
   
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-// Route::get('/subscription', [App\Http\Controllers\Auth\AuthOtpController::class, 'subscriptionpage'])->name('subscriptionpage.index');
-
 Route::get('/subscription', [App\Http\Controllers\HomeController::class, 'subscription'])->name('subscriptionpage.index');
 
 Route::controller(AuthOtpController::class)->group(function(){
@@ -54,6 +42,9 @@ Route::post('/esewa', [EsewaController::class, 'esewaPay'])->name('esewa');
 Route::get('/success', [EsewaController::class, 'esewaPaySuccess']);
 Route::get('/failure', [EsewaController::class, 'esewaPayFailed']);
 
+
+
+
 Route::get('sendmail', [RegisterController::class, 'index1'])->name('index1');
 Route::get('ok', [RegisterController::class, 'emailg'])->name('emailg');
 Route::get('/LoginProfile', [HomeController::class, 'LoginProfile'])->name('LoginProfile');
@@ -63,9 +54,7 @@ Route::post('/task', [TaskController::class, 'store'])->name('task.store');
 Route::patch('/task/{task}', [TaskController::class, 'update'])->name('task.update');
 Route::post('/tasks/{taskId}/update-description', [TaskController::class,'updateDescription'])->name('tasks.updateDescription');
 Route::post('/update-task-status', [TaskController::class, 'updateTaskStatus'])->name('update-task-status');
-
-
-
+Route::get('/tasks/{taskId}/history', [TaskController::class, 'fetchTaskHistory'])->name('tasks.history');
 
 
 
@@ -77,25 +66,15 @@ Route::get('/start-free-trial', function () { $trialStartDate = now();
 Route::get('/restricted-page', function () {
     $trialStartDate = session('trial_start_date');
     
-    // Check if the trial period has expired (15 days)
+
     if ($trialStartDate && now()->diffInDays($trialStartDate) < 15) {
-        // User is within the trial period, allow access
+        
         return view('restricted-page');
     } else {
-        // Trial period has expired, restrict access
+        
         return redirect()->route('home')->with('error', 'Your trial has expired.');
     }
 });
-
-
-
-//Forgotpassword Implementing here
-// routes/web.php
-
-Route::get('forgot-password', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.requests');
-Route::post('forgot-password', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.emails');
-
-
 
 
 Route::resource('tasks', TaskController::class);
@@ -104,7 +83,6 @@ use App\Http\Controllers\CardController;
 Route::post('/board', [BoardController::class, 'Bstores'])->name('Bstores');
 Route::get('/boards/{id}', [BoardController::class, 'show'])->name('board.show');
 Route::post('/statuses', [BoardController::class, 'store'])->name('statuses.store');
-// Route::resource('boards', BoardController::class);
 Route::resource('Task', TaskController::class);
 
 use App\Http\Controllers\Auth\YourOtpVerificationController;

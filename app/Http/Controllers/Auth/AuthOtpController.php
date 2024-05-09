@@ -24,7 +24,6 @@ class AuthOtpController extends Controller
     public function verify(Request $request, $user_id)
     {
         $user = User::findOrFail($user_id);
-        // Your verification logic here
         return view('auth.verify',compact('user'));   
 
     }
@@ -75,23 +74,7 @@ class AuthOtpController extends Controller
         ]);
     }
   
-    /**
-     * Write code on Method
-     *
-     * @return response()
-     */
-    // public function verification($user_id)
-    // {
-    //     return view('auth.otpVerification')->with([
-    //         'user_id' => $user_id
-    //     ]);
-    // }
-  
-    /**
-     * Write code on Method
-     *
-     * @return response()
-     */
+
     public function loginWithOtp(Request $request)
     {
         /* Validation */
@@ -125,12 +108,6 @@ class AuthOtpController extends Controller
   
         return redirect()->route('otp.login')->with('error', 'Your Otp is not correct');
     }
-//     public function verification(Request $request, $user_id)
-// {
-//     $user = User::findOrFail($user_id);
-
-//     return view('auth.verify', ['user' => $user]);
-// }
 
 public function verifyOtp(Request $request, $user_id)
 {
@@ -140,25 +117,22 @@ public function verifyOtp(Request $request, $user_id)
 
     $user = User::findOrFail($user_id);
 
-    // Check if the OTP matches
     if ((int) $user->otp !== (int) $request->otp) {
         return redirect()->back()->withErrors(['otp' => 'The OTP entered is incorrect.']);
     }
 
-    // Check if the OTP is expired
     if (Carbon::parse($user->otp_expires_at)->isPast()) {
         return redirect()->back()->withErrors(['otp' => 'The OTP has expired.']);
     }
 
-    // OTP is correct and not expired
-    $user->otp = null; // clear the otp since it's no longer needed
+    
+    $user->otp = null; 
     $user->otp_expires_at = null;
     $user->save();
 
     // Login the user
     auth()->login($user);
 
-    // Redirect to the home page or any other page
     return redirect()->route('subscriptionpage.index')->with('success', 'You have been successfully verified.');
 }
 public function subscriptionpage()
@@ -167,9 +141,9 @@ public function subscriptionpage()
 }
 public function verification($user_id)
 {
-    $user = User::findOrFail($user_id);  // Find the user or fail with a 404 error
+    $user = User::findOrFail($user_id);  
 
-    return view('auth.verify', compact('user'));  // Pass the user to the view
+    return view('auth.verify', compact('user'));  
 }
 
 }

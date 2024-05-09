@@ -35,7 +35,7 @@ class HomeController extends Controller
 
     public function otp()
     {
-        // dd('asdasdasdasdasd');
+
         return view('Account.otpverification');
     }
 

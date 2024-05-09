@@ -18,18 +18,14 @@ class PaymentController extends Controller
     public function processPayment(Request $request)
     {
         $totalAmount = $request->total_amount;
-        $transactionUUID = Str::uuid()->toString(); // Generating a UUID for the transaction
+        $transactionUUID = Str::uuid()->toString();
         $productCode = $request->product_code;
 
-        // Create the data string in the exact order
         $data = "{$totalAmount},{$transactionUUID},{$productCode}";
         $secretKey = env('ESEWA_SECRET_KEY');
 
-        // Generate HMAC signature
         $signature = hash_hmac('sha256', $data, $secretKey);
-
         Log::info("Generated Signature: " . $signature);
-
         return view('payments.confirm', [
             'totalAmount' => $totalAmount,
             'transactionUUID' => $transactionUUID,
@@ -40,6 +36,6 @@ class PaymentController extends Controller
 
     public function verifyPayment(Request $request)
     {
-        // Code to verify payment after callback from eSewa
+
     }
 }

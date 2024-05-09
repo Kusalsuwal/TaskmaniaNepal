@@ -33,6 +33,6 @@ class MailNotify extends Mailable implements ShouldQueue
     {
         return $this->from('kusalsuwal5@gmail.com', 'Taskmania Nepal')
                     ->subject('Your OTP: ' . $this->otp)
-                    ->text('Emailotp'); // Assuming you have a plain text view for OTP
+                    ->text('Emailotp'); 
     }
 }

@@ -9,7 +9,7 @@
                 </div>
                 <div class="card-body">
                     <form id="form-new-board" action="{{ route('Bstores') }}" method="POST">
-                        @csrf <!-- Include CSRF token -->
+                        @csrf 
                         <div class="mb-3">
                             <input type="text" name="title" class="form-control" placeholder="Enter board name">
                         </div>
@@ -21,29 +21,20 @@
         @foreach ($boards as $board)
         <div class="col-md-4">
         <a href="{{ route('board.show', ['id' => $board->id]) }}" style="text-decoration: none;">
-
                 <div class="card">
                     <div class="card-header bg-primary text-white">
                         <h3 class="card-title">{{ $board->title }}</h3>
                     </div>
                     <div class="card-body dropzone" ondrop="drop(event, '{{ $board->id }}')" ondragover="allowDrop(event)">
-                        <!-- Task form -->
                         <form id="form-board-{{ $board->id }}" action="{{ route('tasks.store') }}" method="POST" class="task-form" style="display: none;">
-                            @csrf <!-- Include CSRF token -->
+                            @csrf 
                             <input type="hidden" name="board_id" value="{{ $board->id }}">
                             <div class="mb-3">
                                 <input type="text" name="name" class="form-control" placeholder="Enter task name">
                             </div>
                             <button type="submit" class="btn btn-primary">Add Task</button>
                         </form>
-                        
-                        <!-- Task list -->
                         <div id="tasks-board-{{ $board->id }}" class="task-list">
-                            <!-- @foreach ($board->cards as $card)
-                            <div onclick="showModal('{{ $card->name }}', '{{ $card->description }}', '{{ $card->id }}')" draggable="true" ondragstart="drag(event)" class="task card mb-3" id="task-{{ $card->id }}" data-task-id="{{ $card->id }}" data-task-name="{{ $card->name }}">
-                                <div class="card-body">{{ $card->name }}</div>
-                            </div>
-                            @endforeach -->
                         </div>
                     </div>
                 </div>
@@ -65,8 +56,8 @@
             <textarea id="taskDescription" class="form-control" placeholder="Enter task description"></textarea>
         </div>
         <button onclick="saveTaskDescription()" class="btn btn-primary">Save Description</button>
-        <input type="hidden" id="taskId"> <!-- Hidden input to store task ID -->
-        <meta name="csrf-token" content="{{ csrf_token() }}"> <!-- CSRF token -->
+        <input type="hidden" id="taskId"> 
+        <meta name="csrf-token" content="{{ csrf_token() }}"> 
     </div>
 </div>
 
@@ -74,24 +65,17 @@
     function allowDrop(ev) {
         ev.preventDefault();
     }
-
     function drag(ev) {
         ev.dataTransfer.setData("text", ev.target.id);
     }
-
     function drop(ev, boardId) {
         ev.preventDefault();
         var data = ev.dataTransfer.getData("text");
         var droppedTask = document.getElementById(data);
         var tasksContainer = document.getElementById(`tasks-board-${boardId}`);
         var taskElements = tasksContainer.getElementsByClassName("task");
-
-        // Remove the task from its original position
         droppedTask.parentNode.removeChild(droppedTask);
-
-        // Append the task to the new board's task list
         tasksContainer.appendChild(droppedTask);
-
         var taskId = droppedTask.dataset.taskId;
         updateTaskBoard(taskId, boardId);
     }
@@ -99,8 +83,8 @@
     function showModal(taskName, taskDescription, taskId) {
         var modal = document.getElementById('taskModal');
         document.getElementById('taskName').textContent = taskName;
-        document.getElementById('taskDescription').value = taskDescription; // Populate description
-        document.getElementById('taskId').value = taskId; // Populate task ID
+        document.getElementById('taskDescription').value = taskDescription;
+        document.getElementById('taskId').value = taskId; 
         modal.style.display = 'block';
     }
 
@@ -114,7 +98,7 @@
         var description = document.getElementById('taskDescription').value;
         var formData = new FormData();
         formData.append('description', description);
-        formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content')); // Include CSRF token
+        formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content')); 
 
         fetch(`/tasks/${taskId}/update-description`, {
             method: 'POST',
@@ -150,8 +134,6 @@
         })
         .catch(error => console.error('Error updating task board:', error));
     }
-
-    // Function to toggle display of task form
     function showTaskForm(boardId) {
         var form = document.getElementById('form-board-' + boardId);
         if (form.style.display === 'none') {
@@ -160,7 +142,6 @@
             form.style.display = 'none';
         }
     }
-
     document.querySelectorAll('.task-form').forEach(form => {
         form.addEventListener('submit', function (e) {
             e.preventDefault();
@@ -195,7 +176,6 @@
         });
     });
 </script>
-
 <style>
     body {
         background-image: url('https://source.unsplash.com/1600x900/?office');
@@ -262,8 +242,8 @@
         margin-bottom: 10px;
     }
     .card-body {
-        max-height: 300px; /* Adjust the maximum height as needed */
-        overflow-y: auto; /* Add vertical scroll when content exceeds max height */
+        max-height: 300px; 
+        overflow-y: auto; 
     }
 </style>
 @endsection

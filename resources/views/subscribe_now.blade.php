@@ -8,14 +8,6 @@
     <!-- Include Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* body {
-            padding-top: 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #f7f7f7;
-        } */
         .payment-form {
             padding: 20px;
             background: white;
@@ -39,17 +31,17 @@
             cursor: pointer;
         }
         body {
-            background-color: #f7f7f7; /* Light grey background */
+            background-color: #f7f7f7; 
         }
         .text-muted {
             font-weight: bold;
-            color: #0056b3 !important; /* Custom color for brand */
+            color: #0056b3 !important; 
         }
         .container {
             padding-top: 2rem;
         }
         .btn-primary, .btn-secondary {
-            width: 100%; /* Full width buttons */
+            width: 100%; 
             padding: 10px;
             font-size: 16px;
         }
@@ -59,23 +51,12 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-             <!-- <h3 class="navbar-brand"  href="#">Taskmania Nepal</h3> -->
+            
              <h3 class="text-muted" style="margin-top: 10px;">Taskmania Nepal</h3>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <!-- <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="">Features</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Pricing</a>
-                    </li>
-                </ul> -->
             </div>
         </div>
     </nav>
@@ -94,7 +75,7 @@
             <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
             <input type="hidden" name="name" value="{{ auth()->user()->name }}">
             <input type="hidden" name="email" value="{{ auth()->user()->email }}">
-            <input type="hidden" name="amount" value="100"> <!-- Updated amount to $500 -->
+            <input type="hidden" name="amount" value="100"> 
             <input type="submit" class="pay-button" value="Pay With Esewa">
         </form>
     </div>
