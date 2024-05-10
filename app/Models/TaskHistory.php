@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class TaskHistory extends Model
 {
-    protected $fillable = ['task_id', 'old_status_id', 'new_status_id'];
+    protected $fillable = ['task_id', 'old_status_id', 'new_status_id','user_id'];
 
     public function task()
     {
@@ -21,5 +21,12 @@ class TaskHistory extends Model
     {
         return $this->belongsTo(Status::class, 'new_status_id');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+
     
 }

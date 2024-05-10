@@ -58,7 +58,7 @@
     <div class="row justify-content-center">
       <div class="col-md-8">
         <div class="profile-card text-center">
-        <img src="{{ asset('uploads/students/' . Auth::user()->image) }}" alt="Profile Picture" class="profile-picture">
+        <img src="{{ asset('uploads/students/' . Auth::user()->image) }}" alt="" class="profile-picture">
           <h2 class="mt-3">{{ Auth::user()->name }}</h2>
         
           <p>Email:{{ Auth::user()->email }}</p>

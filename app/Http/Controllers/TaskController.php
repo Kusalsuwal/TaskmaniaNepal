@@ -27,29 +27,37 @@ class TaskController extends Controller
     public function fetchTaskHistory($taskId)
     {
         $task = Task::findOrFail($taskId); 
-        $history = $task->with(['history' => function ($query) {
-            $query->with('oldStatus', 'newStatus'); 
+        $history = Task::where('id', $taskId)
+        ->with(['history' => function ($query) {
+            $query->with('oldStatus', 'newStatus','user'); 
         }])
         ->orderBy('created_at', 'desc')
         ->get();
     
         foreach ($history as $event) {
             foreach ($event->history as $his) {
-                $newStatus = $his->newStatus;
                 $oldStatus = $his->oldStatus;
-                $his->new_status_name = $newStatus ? $newStatus->name : 'Unknown';
+                $newStatus = $his->newStatus;
+                $user_id = $his->user_id;
+    
                 $his->old_status_name = $oldStatus ? $oldStatus->name : 'Unknown';
-               
+                $his->new_status_name = $newStatus ? $newStatus->name : 'Unknown';
+                $his->user_id = $user_id; 
             }
         }
     
         return response()->json($history);
     }
+    
 
 public function updateTaskStatus(Request $request)
 {
+    // dd($request->all());
     $taskId = $request->input('task_id');
     $newStatusId = $request->input('status_id');
+    $user_id = Auth()->user()->id;
+    // dd($user_id);
+
 
     $task = Task::find($taskId);
     $oldStatusId = $task->status_id;
@@ -61,6 +69,7 @@ public function updateTaskStatus(Request $request)
         'task_id' => $taskId,
         'old_status_id' => $oldStatusId,
         'new_status_id' => $newStatusId,
+        'user_id' => $user_id,
     ]);
 
     return response()->json(['success' => true]);

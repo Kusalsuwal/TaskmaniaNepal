@@ -18,7 +18,7 @@
                         @foreach($statuses as $key=>$status)
                             <div class="col-md-4">
                                 <div class="card" ondrop="drop(event)" ondragover="allowDrop(event)">
-                                    <div class="card-header">{{ $status->name }}</div>
+                                    <div class="card-header" style="background-color: #0052FF;color:white" >{{ $status->name }}</div>
                                     <div class="card-body show"> 
                                       
                                         <ul class="list-group task-list" data-status-id="{{ $status->id }}">
@@ -114,61 +114,66 @@ function showModal(taskName, taskDescription, taskId) {
     fetchTaskHistory(taskId);
 }
 
-function fetchTaskHistory(taskId) {
+function fetchTaskHistory(taskId, userId) {
     fetch(`/tasks/${taskId}/history`)
     .then(response => response.json())
     .then(history => {
-        
         if (history.length > 0) {
             var historyHtml = '<h3>Task History</h3><ul>';
             history.forEach(event => {
-                event.history.forEach(historyItem => {
-                        historyHtml += `<li> - Status: ${historyItem.old_status_name} -> ${historyItem.new_status_name}</li>`;
-                    });
-            });
+    event.history.forEach(historyItem => {
+        historyHtml += `<li> -  ${historyItem.user.name} moved task from ${historyItem.old_status_name} to ${historyItem.new_status_name}</li>`;
+    });
+});
+
             historyHtml += '</ul>'; 
             
             document.getElementById('taskHistory').innerHTML = historyHtml;
         } else {
-           
             document.getElementById('taskHistory').innerHTML = '<p>No history available.</p>';
         }
     })
     .catch(error => console.error('Error fetching task history:', error));
 }
 
+
+
+// Example usage
+fetchTaskHistory("selectedTaskId");
+
+
         function closeModal() {
             var modal = document.getElementById('taskModal');
             modal.style.display = 'none';
         }
 
-            function saveTaskDescription() {
-            var taskId = document.getElementById('taskId').value;
-            var description = document.getElementById('taskDescription').value;
+        function saveTaskDescription() {
+    var taskId = document.getElementById('taskId').value;
+    var description = document.getElementById('taskDescription').value;
 
-           
-            var formData = new FormData();
-            formData.append('description', description);
-            formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content')); 
+    var formData = new FormData();
+    formData.append('description', description);
+    formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content')); 
 
-            fetch(`/tasks/${taskId}/update-description`, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Task description saved successfully');
-                    closeModal();
-
-                    
-                    fetchTaskHistory(taskId);
-                } else {
-                    alert('Failed to save task description');
-                }
-            })
-            .catch(error => console.error('Error:', error));
+    fetch(`/tasks/${taskId}/update-description`, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Task description saved successfully');
+            closeModal();
+            fetchTaskHistory(taskId);
+            // Reload the page
+            location.reload();
+        } else {
+            alert('Failed to save task description');
         }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
 
         
         function updateTaskStatus(taskId, statusId) {
@@ -188,6 +193,7 @@ function fetchTaskHistory(taskId) {
                 }
             });
         }
+        
 
         $(document).ready(function() {
             
@@ -219,6 +225,8 @@ function fetchTaskHistory(taskId) {
 
                        
                         $('#status-form')[0].reset();
+                        // Reload the page after adding a status
+                        location.reload();
                     },
                     error: function(xhr, status, error) {
                         console.error(error);
@@ -228,29 +236,29 @@ function fetchTaskHistory(taskId) {
             });
             
             $(document).on('submit', '.task-form', function(event) {
-    event.preventDefault(); 
-    var formData = $(this).serialize();
-    var url = '{{ route("task.store") }}'; 
-    var $form = $(this); 
-    $.ajax({
-        url: url,
-        type: 'POST',
-        data: formData,
-        success: function(response) {
-            alert('Task added successfully');
-            // Reload the page after a successful task addition
-            location.reload();
-            var taskName = $form.find('input[name="name"]').val();
-            var statusId = $form.data('status-id');
-            var $taskList = $('[data-status-id="' + statusId + '"]');
-            $taskList.append('<li class="list-group-item">' + taskName + '</li>');
-            $form.find('input[name="name"]').val('');
-        },
-        error: function(xhr, status, error) {
-            console.error(error);
-        }
-    });
-});
+                event.preventDefault(); 
+                var formData = $(this).serialize();
+                var url = '{{ route("task.store") }}'; 
+                var $form = $(this); 
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        alert('Task added successfully');
+                        // Reload the page after adding a task
+                        location.reload();
+                        var taskName = $form.find('input[name="name"]').val();
+                        var statusId = $form.data('status-id');
+                        var $taskList = $('[data-status-id="' + statusId + '"]');
+                        $taskList.append('<li class="list-group-item">' + taskName + '</li>');
+                        $form.find('input[name="name"]').val('');
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            });
 
         });
     </script>

@@ -24,8 +24,8 @@
 
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-            <div class="container" >
+        <nav class="navbar navbar-expand-md navbar-light  shadow-sm" style="background-color: #0052FF;">
+            <div class="container"  >
             <nav class="">
         <div class="container-fluid">
              <!-- <h3 class="navbar-brand"  href="#">Taskmania Nepal</h3> -->
@@ -69,7 +69,7 @@
                             @endif
                         @else
                             <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                <a id="navbarDropdown" style="color:aliceblue" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }}
                                 </a>
 
