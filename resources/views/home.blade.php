@@ -1,11 +1,22 @@
 @extends('layouts.app')
 @section('content')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+</head>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<body>
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header bg-primary text-white">
-                <h3 class="card-title">Create your project </h3>
+                <h3 class="card-title">Create your project</h3>
                 </div>
                 <div class="card-body">
                     <form id="form-new-board" action="{{ route('Bstores') }}" method="POST">
@@ -45,103 +56,8 @@
 </div>
 
 
-<!-- Modal -->
-<div id="taskModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <h2 class="mb-3">Task Details</h2>
-        <p id="taskName"></p>
-        <div class="mb-3">
-            <label for="taskDescription" class="form-label">Description</label>
-            <textarea id="taskDescription" class="form-control" placeholder="Enter task description"></textarea>
-        </div>
-        <button onclick="saveTaskDescription()" class="btn btn-primary">Save Description</button>
-        <input type="hidden" id="taskId"> 
-        <meta name="csrf-token" content="{{ csrf_token() }}"> 
-    </div>
-</div>
 
 <script>
-    function allowDrop(ev) {
-        ev.preventDefault();
-    }
-    function drag(ev) {
-        ev.dataTransfer.setData("text", ev.target.id);
-    }
-    function drop(ev, boardId) {
-        ev.preventDefault();
-        var data = ev.dataTransfer.getData("text");
-        var droppedTask = document.getElementById(data);
-        var tasksContainer = document.getElementById(`tasks-board-${boardId}`);
-        var taskElements = tasksContainer.getElementsByClassName("task");
-        droppedTask.parentNode.removeChild(droppedTask);
-        tasksContainer.appendChild(droppedTask);
-        var taskId = droppedTask.dataset.taskId;
-        updateTaskBoard(taskId, boardId);
-    }
-
-    function showModal(taskName, taskDescription, taskId) {
-        var modal = document.getElementById('taskModal');
-        document.getElementById('taskName').textContent = taskName;
-        document.getElementById('taskDescription').value = taskDescription;
-        document.getElementById('taskId').value = taskId; 
-        modal.style.display = 'block';
-    }
-
-    function closeModal() {
-        var modal = document.getElementById('taskModal');
-        modal.style.display = 'none';
-    }
-
-    function saveTaskDescription() {
-        var taskId = document.getElementById('taskId').value;
-        var description = document.getElementById('taskDescription').value;
-        var formData = new FormData();
-        formData.append('description', description);
-        formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content')); 
-
-        fetch(`/tasks/${taskId}/update-description`, {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Task description saved successfully');
-                closeModal(); 
-            } else {
-                alert('Failed to save task description');
-            }
-        })
-        .catch(error => console.error('Error:', error));
-    }
-
-    function updateTaskBoard(taskId, boardId) {
-        fetch(`/tasks/${taskId}/update-board`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: JSON.stringify({ board_id: boardId })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (!data.success) {
-                alert('Failed to update task board');
-            }
-        })
-        .catch(error => console.error('Error updating task board:', error));
-    }
-    function showTaskForm(boardId) {
-        var form = document.getElementById('form-board-' + boardId);
-        if (form.style.display === 'none') {
-            form.style.display = 'block';
-        } else {
-            form.style.display = 'none';
-        }
-    }
     document.querySelectorAll('.task-form').forEach(form => {
         form.addEventListener('submit', function (e) {
             e.preventDefault();
@@ -168,6 +84,28 @@
                     task.dataset.taskName = data.task.name;
                     task.innerHTML = `<div class="card-body">${data.task.name}</div>`;
                     document.getElementById(`tasks-board-${data.task.board_id}`).appendChild(task);
+
+
+                    Swal.fire({
+                        title: "Auto close alert!",
+                        html: "Project added successfully!",
+                        timer: 2000,
+                        timerProgressBar: true,
+                        didOpen: () => {
+                            Swal.showLoading();
+                            const timer = Swal.getPopup().querySelector("b");
+                            timerInterval = setInterval(() => {
+                                timer.textContent = `${Swal.getTimerLeft()}`;
+                            }, 100);
+                        },
+                        willClose: () => {
+                            clearInterval(timerInterval);
+                        }
+                    }).then((result) => {
+                        if (result.dismiss === Swal.DismissReason.timer) {
+                            console.log("Alert closed by the timer");
+                        }
+                    });
                 } else {
                     alert('Error adding task');
                 }
@@ -176,6 +114,9 @@
         });
     });
 </script>
+</body>
+</html>
+
 <style>
     body {
         background-image: url('https://source.unsplash.com/1600x900/?office');

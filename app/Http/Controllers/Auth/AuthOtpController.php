@@ -39,8 +39,6 @@ class AuthOtpController extends Controller
         $request->validate([
             'mobile_no' => 'required|exists:users,mobile_no'
         ]);
-  
-        /* Generate An OTP */
         $userOtp = $this->generateOtp($request->mobile_no);
         $userOtp->sendSMS($request->mobile_no);
   
@@ -57,7 +55,7 @@ class AuthOtpController extends Controller
     {
         $user = User::where('mobile_no', $mobile_no)->first();
   
-        /* User Does not Have Any Existing OTP */
+
         $userOtp = UserOtp::where('user_id', $user->id)->latest()->first();
   
         $now = now();
@@ -66,7 +64,6 @@ class AuthOtpController extends Controller
             return $userOtp;
         }
   
-        /* Create a New OTP */
         return UserOtp::create([
             'user_id' => $user->id,
             'otp' => rand(123456, 999999),
@@ -77,13 +74,13 @@ class AuthOtpController extends Controller
 
     public function loginWithOtp(Request $request)
     {
-        /* Validation */
+
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'otp' => 'required'
         ]);  
   
-        /* Validation Logic */
+
         $userOtp   = UserOtp::where('user_id', $request->user_id)->where('otp', $request->otp)->first();
   
         $now = now();
@@ -130,7 +127,7 @@ public function verifyOtp(Request $request, $user_id)
     $user->otp_expires_at = null;
     $user->save();
 
-    // Login the user
+
     auth()->login($user);
 
     return redirect()->route('subscriptionpage.index')->with('success', 'You have been successfully verified.');

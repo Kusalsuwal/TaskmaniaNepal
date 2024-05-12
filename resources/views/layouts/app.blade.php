@@ -29,7 +29,7 @@
             <nav class="">
         <div class="container-fluid">
              <!-- <h3 class="navbar-brand"  href="#">Taskmania Nepal</h3> -->
-             <a class="navbar-brand" href="#"><img src="{{ asset('img/team/Taskman.png') }}" alt="Taskmania Nepal Logo"style="margin-top: -12px;width: 129px;height: auto;"></a>
+             <a class="navbar-brand" href="/"><img src="{{ asset('img/team/Taskman.png') }}" alt="Taskmania Nepal Logo"style="margin-top: -12px;width: 129px;height: auto;"></a>
             <!-- <button class="" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"> -->
                 <!-- <span class="navbar-toggler-icon"></span>
             </button> -->
@@ -75,7 +75,7 @@
 
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
     <a class="dropdown-item" href="{{ route('LoginProfile') }}">Profile</a>
-    <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('passwordResetForm').submit();">
+    <a class="dropdown-item" href="#" onclick="confirmChangePassword()">
     Change Password
 </a>
 
@@ -84,15 +84,77 @@
     <input type="email" name="email" value="{{ Auth::user()->email }}">
 </form>
 
-    <a class="dropdown-item" href="{{ route('logout') }}"
-        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-        {{ __('Logout') }}
-    </a>
-                                    
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function confirmChangePassword() {
+        Swal.fire({
+            title: "Please check your email the reset password link hasbeen sent to your mail sucessfully",
+            showClass: {
+                popup: `
+                    animate__animated
+                    animate__fadeInUp
+                    animate__faster
+                `
+            },
+            hideClass: {
+                popup: `
+                    animate__animated
+                    animate__fadeOutDown
+                    animate__faster
+                `
+            }
+        });
 
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                        @csrf
-                                    </form>
+        
+        setTimeout(() => {
+            document.getElementById('passwordResetForm').submit();
+        }, 1000); 
+    }
+</script>
+
+
+<a class="dropdown-item" href="#" onclick="confirmLogout()">
+    {{ __('Logout') }}
+</a>
+
+<form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+    @csrf
+</form>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function confirmLogout() {
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: "btn btn-success",
+                cancelButton: "btn btn-danger"
+            },
+            buttonsStyling: false
+        });
+
+        swalWithBootstrapButtons.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, logout!",
+            cancelButtonText: "No, cancel!",
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+               
+                document.getElementById('logout-form').submit();
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                swalWithBootstrapButtons.fire({
+                    title: "Cancelled",
+                    text: "You are still logged in :)",
+                    icon: "info"
+                });
+            }
+        });
+    }
+</script>
+
                                 </div>
                             </li>
                         @endguest

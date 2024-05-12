@@ -42,9 +42,6 @@ Route::post('/esewa', [EsewaController::class, 'esewaPay'])->name('esewa');
 Route::get('/success', [EsewaController::class, 'esewaPaySuccess']);
 Route::get('/failure', [EsewaController::class, 'esewaPayFailed']);
 
-
-
-
 Route::get('sendmail', [RegisterController::class, 'index1'])->name('index1');
 Route::get('ok', [RegisterController::class, 'emailg'])->name('emailg');
 Route::get('/LoginProfile', [HomeController::class, 'LoginProfile'])->name('LoginProfile');

@@ -7,7 +7,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 </head>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <body>
 <div class="container">
         <div class="row">
@@ -80,6 +83,7 @@
         </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
  
         function drag(ev) {
@@ -138,7 +142,7 @@ function fetchTaskHistory(taskId, userId) {
 
 
 
-// Example usage
+
 fetchTaskHistory("selectedTaskId");
 
 
@@ -146,7 +150,6 @@ fetchTaskHistory("selectedTaskId");
             var modal = document.getElementById('taskModal');
             modal.style.display = 'none';
         }
-
         function saveTaskDescription() {
     var taskId = document.getElementById('taskId').value;
     var description = document.getElementById('taskDescription').value;
@@ -162,11 +165,20 @@ fetchTaskHistory("selectedTaskId");
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert('Task description saved successfully');
-            closeModal();
-            fetchTaskHistory(taskId);
-            // Reload the page
-            location.reload();
+            // Display success message using Swal.fire()
+            Swal.fire({
+                icon: 'success',
+                title: 'Task description saved successfully',
+                showConfirmButton: false,
+                timer: 1500
+            });
+
+            // Delay the reload by 1500 milliseconds (the same duration as the timer)
+            setTimeout(function() {
+                closeModal();
+                fetchTaskHistory(taskId);
+                location.reload();
+            }, 1500);
         } else {
             alert('Failed to save task description');
         }
@@ -175,90 +187,117 @@ fetchTaskHistory("selectedTaskId");
 }
 
 
+
         
-        function updateTaskStatus(taskId, statusId) {
-            $.ajax({
-                url: '/update-task-status',
-                type: 'POST',
-                data: {
-                    task_id: taskId,
-                    status_id: statusId,
-                    _token: '{{ csrf_token() }}'
-                },
-                success: function(response) {
-                    console.log('Task status updated successfully');
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error updating task status:', error);
-                }
+function updateTaskStatus(taskId, statusId) {
+    $.ajax({
+        url: '/update-task-status',
+        type: 'POST',
+        data: {
+            task_id: taskId,
+            status_id: statusId,
+            _token: '{{ csrf_token() }}'
+        },
+        success: function(response) {
+            // Display success message using Swal.fire()
+            Swal.fire({
+                icon: 'success',
+                title: 'Task move successfully',
+                showConfirmButton: false,
+                timer: 1500
             });
+        },
+        error: function(xhr, status, error) {
+            console.error('Error updating task status:', error);
         }
+    });
+}
+
         
-
-        $(document).ready(function() {
-            
-            $('#status-form').submit(function(event) {
-                event.preventDefault(); 
-                var formData = $(this).serialize(); 
-                $.ajax({
-                    url: '{{ route("statuses.store") }}',
-                    type: 'POST',
-                    data: formData,  
-                    success: function(response) {
-                       
-                        $('#statuses-container').append(`
-                            <div class="col-md-4">
-                                <div class="card">
-                                    <div class="card-header">${response.name}</div>
-                                    <div class="card-body show"> <!-- Add 'show' class here -->
-                                        <ul class="list-group task-list" data-status-id="${response.id}">
-                                        </ul>
-                                        <form class="task-form" data-status-id="${response.id}">
-                                            @csrf
-                                            <input type="text" class="form-control task-input" name="name" placeholder="Enter task name">
-                                            <button type="submit" class="btn btn-primary btn-sm mt-2">Add Task</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        `);
-
-                       
-                        $('#status-form')[0].reset();
-                        // Reload the page after adding a status
-                        location.reload();
-                    },
-                    error: function(xhr, status, error) {
-                        console.error(error);
-                       
-                    }
+$(document).ready(function() {
+    $('#status-form').submit(function(event) {
+        event.preventDefault(); 
+        var formData = $(this).serialize(); 
+        $.ajax({
+            url: '{{ route("statuses.store") }}',
+            type: 'POST',
+            data: formData,  
+            success: function(response) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Card has been added successfully',
+                    showConfirmButton: false,
+                    timer: 1500
                 });
-            });
+                
+                
+                setTimeout(function() {
+                    location.reload();
+                }, 1500);
+                
+                $('#statuses-container').append(`
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">${response.name}</div>
+                            <div class="card-body show"> <!-- Add 'show' class here -->
+                                <ul class="list-group task-list" data-status-id="${response.id}">
+                                </ul>
+                                <form class="task-form" data-status-id="${response.id}">
+                                    @csrf
+                                    <input type="text" class="form-control task-input" name="name" placeholder="Enter task name">
+                                    <button type="submit" class="btn btn-primary btn-sm mt-2">Add Task</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                `);
+
+                $('#status-form')[0].reset();
+            },
+            error: function(xhr, status, error) {
+                console.error(error);
+            }
+        });
+    });
+
+
             
             $(document).on('submit', '.task-form', function(event) {
-                event.preventDefault(); 
-                var formData = $(this).serialize();
-                var url = '{{ route("task.store") }}'; 
-                var $form = $(this); 
-                $.ajax({
-                    url: url,
-                    type: 'POST',
-                    data: formData,
-                    success: function(response) {
-                        alert('Task added successfully');
-                        // Reload the page after adding a task
-                        location.reload();
-                        var taskName = $form.find('input[name="name"]').val();
-                        var statusId = $form.data('status-id');
-                        var $taskList = $('[data-status-id="' + statusId + '"]');
-                        $taskList.append('<li class="list-group-item">' + taskName + '</li>');
-                        $form.find('input[name="name"]').val('');
-                    },
-                    error: function(xhr, status, error) {
-                        console.error(error);
-                    }
-                });
+    event.preventDefault(); 
+    var formData = $(this).serialize();
+    var url = '{{ route("task.store") }}'; 
+    var $form = $(this); 
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: formData,
+        success: function(response) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Task added successfully',
+                showConfirmButton: false,
+                timer: 1500
             });
+
+            // Delay the reload by 1500 milliseconds (the same duration as the timer)
+            setTimeout(function() {
+                location.reload();
+            }, 1500);
+
+            var taskName = $form.find('input[name="name"]').val();
+            var statusId = $form.data('status-id');
+            var $taskList = $('[data-status-id="' + statusId + '"]');
+            $taskList.append('<li class="list-group-item">' + taskName + '</li>');
+
+            $form.find('input[name="name"]').val('');
+        },
+        error: function(xhr, status, error) {
+            console.error(error);
+        }
+    });
+});
+
+
 
         });
     </script>

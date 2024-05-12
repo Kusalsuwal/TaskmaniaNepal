@@ -52,11 +52,11 @@ class TaskController extends Controller
 
 public function updateTaskStatus(Request $request)
 {
-    // dd($request->all());
+   
     $taskId = $request->input('task_id');
     $newStatusId = $request->input('status_id');
     $user_id = Auth()->user()->id;
-    // dd($user_id);
+  
 
 
     $task = Task::find($taskId);
