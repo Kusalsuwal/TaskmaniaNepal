@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-
 </head>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <body>
@@ -16,7 +15,7 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header bg-primary text-white">
-                <h3 class="card-title">Create your project</h3>
+                <h3 class="card-title">Create Board Here</h3>
                 </div>
                 <div class="card-body">
                     <form id="form-new-board" action="{{ route('Bstores') }}" method="POST">
@@ -30,33 +29,39 @@
             </div>
         </div>
         @foreach ($boards as $board)
-        <div class="col-md-4">
+    <div class="col-md-4">
         <a href="{{ route('board.show', ['id' => $board->id]) }}" style="text-decoration: none;">
-                <div class="card">
-                    <div class="card-header bg-primary text-white">
-                        <h3 class="card-title">{{ $board->title }}</h3>
-                    </div>
-                    <div class="card-body dropzone" ondrop="drop(event, '{{ $board->id }}')" ondragover="allowDrop(event)">
-                        <form id="form-board-{{ $board->id }}" action="{{ route('tasks.store') }}" method="POST" class="task-form" style="display: none;">
-                            @csrf 
-                            <input type="hidden" name="board_id" value="{{ $board->id }}">
-                            <div class="mb-3">
-                                <input type="text" name="name" class="form-control" placeholder="Enter task name">
-                            </div>
-                            <button type="submit" class="btn btn-primary">Add Task</button>
-                        </form>
-                        <div id="tasks-board-{{ $board->id }}" class="task-list">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title">{{ $board->title }}</h3>
+                </div>
+                <div class="card-body dropzone" ondrop="drop(event, '{{ $board->id }}')" ondragover="allowDrop(event)">
+              
+                    <h4>Card</h4>
+                    <ul>
+                    @foreach ($statuses->where('board_id', $board->id) as $status)
+                    <li>{{ $status->name }}: {{ $tasks->where('board_id', $board->id)->where('status_id', $status->id)->count() }}</li>
+                    @endforeach
+                    </ul>
+                    <p>Total Tasks: {{ $tasks->where('board_id', $board->id)->count() }}</p>
+                    
+                    <form id="form-board-{{ $board->id }}" action="{{ route('tasks.store') }}" method="POST" class="task-form" style="display: none;">
+                        @csrf 
+                        <input type="hidden" name="board_id" value="{{ $board->id }}">
+                        <div class="mb-3">
+                            <input type="text" name="name" class="form-control" placeholder="Enter task name">
                         </div>
+                        <button type="submit" class="btn btn-primary">Add Task</button>
+                    </form>
+                    <div id="tasks-board-{{ $board->id }}" class="task-list">
                     </div>
                 </div>
-            </a>
-        </div>
-        @endforeach
+            </div>
+        </a>
+    </div>
+@endforeach
     </div>
 </div>
-
-
-
 <script>
     document.querySelectorAll('.task-form').forEach(form => {
         form.addEventListener('submit', function (e) {

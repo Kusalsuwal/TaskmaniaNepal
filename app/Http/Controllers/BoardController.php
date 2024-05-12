@@ -12,10 +12,8 @@ class BoardController extends Controller
         $boards = Board::all();
         return view('boards.index', compact('boards'));
     }
-
     public function Bstores(Request $request)
     {
-
         $request->validate([
             'title' => 'required|string|max:255',
         ]);
@@ -23,16 +21,12 @@ class BoardController extends Controller
         $board = new Board();
         $board->title = $request->title;
         $board->save();
-
-
         return redirect()->route('home')->with('success', 'Board created successfully.');
     }
     public function show($id)
     {
-
         $board = Board::findOrFail($id);
         $statuses = Status::where('board_id', $id)->get();
-        
         $task_histories = TaskHistory::where('old_status_id', $id,)->get();
         return view('projectview', ['board' => $board, 'statuses' => $statuses,'task_histories' =>$task_histories]);
     }
